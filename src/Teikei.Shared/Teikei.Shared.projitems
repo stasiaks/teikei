@@ -1,0 +1,15 @@
+<Project>
+
+	<PropertyGroup>
+		<HasSharedItems>true</HasSharedItems>
+	</PropertyGroup>
+
+	<PropertyGroup Label="Configuration">
+		<Import_RootNamespace>Teikei</Import_RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		    <Compile Include="$(MSBuildThisFileDirectory)AttributeBuilder.cs" />
+	</ItemGroup>
+
+</Project>

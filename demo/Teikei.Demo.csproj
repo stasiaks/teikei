@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\src\Teikei.NewType\Teikei.NewType.csproj"
+		<ProjectReference Include="..\src\Teikei.Interfaced\Teikei.Interfaced.csproj"
 			OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 

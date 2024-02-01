@@ -17,4 +17,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
 	</ItemGroup>
 
+	<Import Project="..\Teikei.Shared\Teikei.Shared.projitems" Label="Shared"
+		Condition="Exists('..\Teikei.Shared\Teikei.Shared.projitems')" />
+
 </Project>
