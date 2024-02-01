@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Linq;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -73,11 +74,25 @@ public class InterfacedGenerator : IIncrementalGenerator
 			{
 				var specialType = method.ReturnType.SpecialType;
 
+				var parametersList = method.Parameters
+					.SelectMany<IParameterSymbol, SyntaxNodeOrToken>(x => [
+						SyntaxFactory.Token(SyntaxKind.CommaToken),
+						SyntaxFactory.Parameter(
+							SyntaxFactory.Identifier(x.Name)
+						).WithType(x.Type.GetSyntax())
+					])
+					.Skip(1)
+					.ToArray();
+
 				var methodDeclaration = SyntaxFactory.MethodDeclaration(
 					method.ReturnType.GetSyntax(),
 					SyntaxFactory.Identifier(method.Name))
 				.WithSemicolonToken(
-					SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+					SyntaxFactory.Token(SyntaxKind.SemicolonToken))
+				.WithParameterList(
+					SyntaxFactory.ParameterList(
+						SyntaxFactory.SeparatedList<ParameterSyntax>(parametersList))
+				);
 
 				memberDeclarations.Add(methodDeclaration);
 			}
@@ -139,5 +154,4 @@ public class InterfacedGenerator : IIncrementalGenerator
 			token
 		);
 	}
-
 }

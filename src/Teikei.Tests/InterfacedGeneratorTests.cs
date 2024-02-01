@@ -107,7 +107,36 @@ public class InterfacedGeneratorTests
 			}
 		}
 		";
-		Task.FromResult(1);
+		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
+	}
+
+	[Fact]
+	public Task Given_PublicClass_WithAttribute_WithPublicMethods_WithParameters_GeneratesPublicInterfaceWithMethodDeclarations()
+	{
+		var source = @"
+		using Teikei;
+		using System.Threading.Tasks;
+
+		namespace TestNamespace;
+
+		[Interfaced]
+		public partial class TestClass
+		{
+			public void TestMethod(string p1)
+			{
+				System.Console.WriteLine(p1);
+			}
+
+			public int TestMethod2(bool p2) => p2 ? 6 : -1;
+
+			public System.Threading.Tasks.Task<bool> TestMethod3(TestClass p3, int p4) => Task.FromResult(p4 == 1);
+
+			public async Task TestMethod4(System.Exception p5, string p6)
+			{
+				throw p5;
+			}
+		}
+		";
 		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
 	}
 }
