@@ -6,12 +6,13 @@ namespace Teikei;
 
 internal class AttributeDeclarationBuilder(string name)
 {
-	private readonly List<KeyValuePair<Type, string>> parametersList = [];
+	private readonly List<KeyValuePair<Type, string>> _parametersList = [];
+	private readonly Dictionary<string, object?> _parameterDefaultValues = [];
 	private readonly List<string> _typeParameters = [];
 
 	private AttributeTargets _targets = AttributeTargets.All;
 
-	private bool allowMultiple = false;
+	private bool _allowMultiple = false;
 
 	public AttributeDeclarationBuilder WithTargets(AttributeTargets newTargets)
 	{
@@ -19,15 +20,24 @@ internal class AttributeDeclarationBuilder(string name)
 		return this;
 	}
 
-	public AttributeDeclarationBuilder WithParameter(Type parameterType, string parameterName)
+	public AttributeDeclarationBuilder WithParameter<T>(string parameterName)
 	{
-		parametersList.Add(new KeyValuePair<Type, string>(parameterType, parameterName));
+		if (_parameterDefaultValues.Count != 0)
+			throw new InvalidOperationException("Can't add parameter without default value after one with default value");
+		_parametersList.Add(new KeyValuePair<Type, string>(typeof(T), parameterName));
+		return this;
+	}
+
+	public AttributeDeclarationBuilder WithParameter<T>(string parameterName, T defaultValue)
+	{
+		_parametersList.Add(new KeyValuePair<Type, string>(typeof(T), parameterName));
+		_parameterDefaultValues.Add(parameterName, defaultValue);
 		return this;
 	}
 
 	public AttributeDeclarationBuilder WithAllowMultiple(bool allow = true)
 	{
-		allowMultiple = allow;
+		_allowMultiple = allow;
 		return this;
 	}
 
@@ -39,7 +49,8 @@ internal class AttributeDeclarationBuilder(string name)
 
 	public ClassDeclarationSyntax Build()
 	{
-		var declaration = SyntaxFactory.ClassDeclaration($"{name}Attribute")
+		var className = $"{name}Attribute";
+		var declaration = SyntaxFactory.ClassDeclaration(className)
 			.WithModifiers(
 				SyntaxFactory.TokenList(
 					SyntaxFactory.Token(SyntaxKind.InternalKeyword)))
@@ -69,7 +80,7 @@ internal class AttributeDeclarationBuilder(string name)
 											),
 											SyntaxFactory.Token(SyntaxKind.CommaToken),
 											SyntaxFactory.AttributeArgument(
-												SyntaxFactory.LiteralExpression(allowMultiple
+												SyntaxFactory.LiteralExpression(_allowMultiple
 													? SyntaxKind.TrueLiteralExpression
 													: SyntaxKind.FalseLiteralExpression)
 											)
@@ -99,6 +110,48 @@ internal class AttributeDeclarationBuilder(string name)
 			declaration = declaration.WithTypeParameterList(
 				SyntaxFactory.TypeParameterList(
 					SyntaxFactory.SeparatedList<TypeParameterSyntax>(typeParameterNodes)
+				)
+			);
+		}
+		if (_parametersList.Count > 0)
+		{
+			var parameterNodes = _parametersList
+				.SelectMany(x =>
+				{
+					var hasDefaultValue = _parameterDefaultValues.TryGetValue(x.Value, out var defaultValue);
+					var parameterSyntax = SyntaxFactory.Parameter(
+						SyntaxFactory.Identifier(x.Value))
+						.WithType(
+							SyntaxFactory.ParseTypeName(x.Key.FullName));
+
+					if (hasDefaultValue)
+					{
+						parameterSyntax = parameterSyntax.WithDefault(
+							SyntaxFactory.EqualsValueClause(
+								CreateLiteralExpression(defaultValue)
+							)
+						);
+					}
+
+					return new SyntaxNodeOrToken[]{
+						SyntaxFactory.Token(SyntaxKind.CommaToken),
+						parameterSyntax
+					};
+				})
+				.Skip(1)
+				.ToArray();
+
+			declaration = declaration.WithMembers(
+				SyntaxFactory.SingletonList<MemberDeclarationSyntax>(
+					SyntaxFactory.ConstructorDeclaration(
+						SyntaxFactory.Identifier(className))
+					.WithParameterList(
+						SyntaxFactory.ParameterList(
+							SyntaxFactory.SeparatedList<ParameterSyntax>(parameterNodes)))
+					.WithModifiers(
+						SyntaxFactory.TokenList(
+							SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
+					.WithBody(SyntaxFactory.Block()) // No need for any body
 				)
 			);
 		}
@@ -140,5 +193,15 @@ internal class AttributeDeclarationBuilder(string name)
 				acc,
 				next
 			));
+	}
+
+	private LiteralExpressionSyntax CreateLiteralExpression(object? value)
+	{
+		return value switch {
+			null => SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression),
+			true => SyntaxFactory.LiteralExpression(SyntaxKind.TrueLiteralExpression),
+			false => SyntaxFactory.LiteralExpression(SyntaxKind.FalseLiteralExpression),
+			_ => throw new NotImplementedException($"Didn't implement handling of literals with type {value.GetType().Name}")
+		};
 	}
 }
