@@ -9,7 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		    <Compile Include="$(MSBuildThisFileDirectory)AttributeBuilder.cs" />
+	    <Compile Include="$(MSBuildThisFileDirectory)AttributeBuilder.cs" />
 	</ItemGroup>
 
 </Project>

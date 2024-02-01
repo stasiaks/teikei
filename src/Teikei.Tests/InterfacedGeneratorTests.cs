@@ -12,12 +12,12 @@ public class InterfacedGeneratorTests
 	}
 
 	[Fact]
-	public Task GivenClassWithoutAttribute_DoesntGenerateInterface()
+	public Task Given_Class_WithoutAttribute_DoesntGenerateInterface()
 	{
 		var source = @"
 		namespace TestNamespace;
 
-		public class TestClass
+		public partial class TestClass
 		{
 
 		}
@@ -27,13 +27,51 @@ public class InterfacedGeneratorTests
 	}
 
 	[Fact]
-	public Task GivenClassWithAttribute_GeneratesInterface()
+	public Task Given_PublicClass_WithAttribute_GeneratesPublicInterface()
 	{
 		var source = @"
+		using Teikei;
+
 		namespace TestNamespace;
 
 		[Interfaced]
-		public class TestClass
+		public partial class TestClass
+		{
+
+		}
+		";
+
+		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
+	}
+
+	[Fact]
+	public Task Given_InternalClass_WithAttribute_GeneratesInternalInterface()
+	{
+		var source = @"
+		using Teikei;
+
+		namespace TestNamespace;
+
+		[Interfaced]
+		internal partial class TestClass
+		{
+
+		}
+		";
+
+		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
+	}
+
+	[Fact]
+	public Task Given_InternalClass_WithAttribute_WithForcePublic_GeneratesPublicInterface()
+	{
+		var source = @"
+		using Teikei;
+
+		namespace TestNamespace;
+
+		[Interfaced(ForcePublicAccessibility: true)]
+		internal partial class TestClass
 		{
 
 		}

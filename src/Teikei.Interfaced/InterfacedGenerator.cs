@@ -11,15 +11,15 @@ public class InterfacedGenerator : IIncrementalGenerator
 {
 	private const string AttributesNamespace = "Teikei";
 	private const string AttributeName = "Interfaced";
-	private const string SkipImplementedMembersParameterName = "skipImplementedMembers";
-	private const string ForcePublicAccessibilityParameterName = "forcePublicAccessibility";
+	private const string SkipImplementedMembersParameterName = "SkipImplementedMembers";
+	private const string ForcePublicAccessibilityParameterName = "ForcePublicAccessibility";
 
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
 		var builder = new AttributeDeclarationBuilder(AttributeName)
 			.WithTargets(AttributeTargets.Class)
-			.WithParameter(typeof(bool), SkipImplementedMembersParameterName)
-			.WithParameter(typeof(bool), ForcePublicAccessibilityParameterName);
+			.WithParameter<bool>(SkipImplementedMembersParameterName, true)
+			.WithParameter<bool>(ForcePublicAccessibilityParameterName, false);
 		var attribute = builder.Build();
 
 		var namespaceNode = SyntaxFactory.NamespaceDeclaration(
@@ -43,8 +43,17 @@ public class InterfacedGenerator : IIncrementalGenerator
 	{
 		foreach (var typeSymbol in symbols)
 		{
+			var attribute = typeSymbol.GetAttributes().FirstOrDefault(x => x.AttributeClass?.Name is $"{AttributeName}Attribute");
+			if (attribute is null)
+				continue;
+
+			var skipImplementedMembers = attribute.ConstructorArguments[0].Value as bool?;
+			var forcePublicAccessibility = attribute.ConstructorArguments[1].Value as bool?;
+
 			var interfaceName = $"I{typeSymbol.Name}";
-			var baseAccessorSyntax = (typeSymbol.DeclaredAccessibility & Accessibility.Internal) != 0 ? SyntaxKind.PublicKeyword : SyntaxKind.InternalKeyword;
+			var baseAccessorSyntax = typeSymbol.DeclaredAccessibility is Accessibility.Public ? SyntaxKind.PublicKeyword : SyntaxKind.InternalKeyword;
+
+			var interfaceAccessorSyntax = forcePublicAccessibility is true ? SyntaxKind.PublicKeyword : baseAccessorSyntax;
 
 			var namespaceNode = SyntaxFactory.NamespaceDeclaration(
 				SyntaxFactory.IdentifierName(typeSymbol.ContainingNamespace.ToDisplayString()))
@@ -53,7 +62,7 @@ public class InterfacedGenerator : IIncrementalGenerator
 							SyntaxFactory.InterfaceDeclaration(interfaceName)
 								.WithModifiers(
 									SyntaxFactory.TokenList(
-										SyntaxFactory.Token(baseAccessorSyntax))),
+										SyntaxFactory.Token(interfaceAccessorSyntax))),
 							SyntaxFactory.ClassDeclaration(typeSymbol.Name)
 								.WithModifiers(
 									SyntaxFactory.TokenList([
@@ -66,7 +75,7 @@ public class InterfacedGenerator : IIncrementalGenerator
 											SyntaxFactory.SimpleBaseType(
 												SyntaxFactory.IdentifierName(interfaceName)
 												))))]));
-			
+
 			var source = namespaceNode.NormalizeWhitespace("\t", "\n").ToFullString();
 
 			context.AddSource($"{typeSymbol.ContainingNamespace}_{interfaceName}__.g.cs", source);
@@ -80,8 +89,8 @@ public class InterfacedGenerator : IIncrementalGenerator
 
 		var result = attribute.Name switch
 		{
-			SimpleNameSyntax sns => sns.Identifier.Text == AttributeName,
-			QualifiedNameSyntax qns => qns.Right.Identifier.Text == AttributeName,
+			SimpleNameSyntax sns => sns.Identifier.Text is AttributeName,
+			QualifiedNameSyntax qns => qns.Right.Identifier.Text is AttributeName,
 			_ => false
 		};
 		return result;
