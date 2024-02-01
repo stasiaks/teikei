@@ -18,8 +18,8 @@ public class InterfacedGenerator : IIncrementalGenerator
 	{
 		var builder = new AttributeDeclarationBuilder(AttributeName)
 			.WithTargets(AttributeTargets.Class)
-			.WithParameter<bool>(SkipImplementedMembersParameterName, true)
-			.WithParameter<bool>(ForcePublicAccessibilityParameterName, false);
+			.WithParameter(SkipImplementedMembersParameterName, true)
+			.WithParameter(ForcePublicAccessibilityParameterName, false);
 		var attribute = builder.Build();
 
 		var namespaceNode = SyntaxFactory.NamespaceDeclaration(
@@ -55,6 +55,33 @@ public class InterfacedGenerator : IIncrementalGenerator
 
 			var interfaceAccessorSyntax = forcePublicAccessibility is true ? SyntaxKind.PublicKeyword : baseAccessorSyntax;
 
+			var publicMembers = typeSymbol.GetMembers()
+				.Where(x => x.DeclaredAccessibility is Accessibility.Public);
+
+			var methods = publicMembers
+				.OfType<IMethodSymbol>()
+				.Where(x => x.MethodKind is not MethodKind.PropertySet)
+				.Where(x => x.MethodKind is not MethodKind.PropertyGet)
+				.Where(x => x.MethodKind is not MethodKind.Constructor);
+
+			var properties = publicMembers
+				.OfType<IPropertySymbol>();
+
+			var memberDeclarations = new List<MemberDeclarationSyntax> { };
+
+			foreach (var method in methods)
+			{
+				var specialType = method.ReturnType.SpecialType;
+
+				var methodDeclaration = SyntaxFactory.MethodDeclaration(
+					GetSyntax(method.ReturnType),
+					SyntaxFactory.Identifier(method.Name))
+				.WithSemicolonToken(
+					SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+
+				memberDeclarations.Add(methodDeclaration);
+			}
+
 			var namespaceNode = SyntaxFactory.NamespaceDeclaration(
 				SyntaxFactory.IdentifierName(typeSymbol.ContainingNamespace.ToDisplayString()))
 					.WithMembers(
@@ -62,7 +89,9 @@ public class InterfacedGenerator : IIncrementalGenerator
 							SyntaxFactory.InterfaceDeclaration(interfaceName)
 								.WithModifiers(
 									SyntaxFactory.TokenList(
-										SyntaxFactory.Token(interfaceAccessorSyntax))),
+										SyntaxFactory.Token(interfaceAccessorSyntax)))
+								.WithMembers(
+									SyntaxFactory.List(memberDeclarations)),
 							SyntaxFactory.ClassDeclaration(typeSymbol.Name)
 								.WithModifiers(
 									SyntaxFactory.TokenList([
@@ -87,13 +116,12 @@ public class InterfacedGenerator : IIncrementalGenerator
 		if (node is not AttributeSyntax attribute)
 			return false;
 
-		var result = attribute.Name switch
+		return attribute.Name switch
 		{
 			SimpleNameSyntax sns => sns.Identifier.Text is AttributeName,
 			QualifiedNameSyntax qns => qns.Right.Identifier.Text is AttributeName,
 			_ => false
 		};
-		return result;
 	}
 
 	private static ITypeSymbol? Transform(GeneratorSyntaxContext context, CancellationToken token)
@@ -111,4 +139,7 @@ public class InterfacedGenerator : IIncrementalGenerator
 			token
 		);
 	}
+
+	private static TypeSyntax GetSyntax(ITypeSymbol typeSymbol) =>
+		SyntaxFactory.ParseTypeName(typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 }
