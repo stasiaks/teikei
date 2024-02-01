@@ -169,4 +169,29 @@ public class InterfacedGeneratorTests
 		";
 		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
 	}
+
+	[Fact]
+	public Task Given_PublicClass_WithAttribute_WithPublicProperties()
+	{
+		var source = @"
+		using Teikei;
+		using System.Threading.Tasks;
+
+		namespace TestNamespace;
+
+		[Interfaced]
+		public partial class TestClass
+		{
+			public int TestProp1 { get; set; }
+			public string TestProp2 { get; set; }
+			public Task TestProp3 { get; set; }
+			public bool TestProp4 { get; }
+			public bool TestProp5 { set; }
+			public string TestProp6 { get; private set; }
+			public string TestProp7 { protected get; set; }
+			public string TestProp8 => ""test"";
+		}
+		";
+		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
+	}
 }

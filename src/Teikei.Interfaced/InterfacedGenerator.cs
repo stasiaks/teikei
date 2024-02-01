@@ -72,8 +72,6 @@ public class InterfacedGenerator : IIncrementalGenerator
 
 			foreach (var method in methods)
 			{
-				var specialType = method.ReturnType.SpecialType;
-
 				var parametersList = method.Parameters
 					.SelectMany<IParameterSymbol, SyntaxNodeOrToken>(x =>
 					{
@@ -105,6 +103,39 @@ public class InterfacedGenerator : IIncrementalGenerator
 				);
 
 				memberDeclarations.Add(methodDeclaration);
+			}
+
+			foreach (var property in properties)
+			{
+				var accessors = new List<AccessorDeclarationSyntax> { };
+
+				if (property.GetMethod?.DeclaredAccessibility == Accessibility.Public)
+				{
+					accessors.Add(SyntaxFactory
+						.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+						.WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)));
+				}
+
+				if (property.SetMethod?.DeclaredAccessibility == Accessibility.Public)
+				{
+					accessors.Add(SyntaxFactory
+						.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+						.WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)));
+				}
+
+				if(accessors.Count == 0)
+					continue;
+
+				var propertyDeclaration = SyntaxFactory.PropertyDeclaration(
+					property.Type.GetSyntax(),
+					property.Name)
+					.WithAccessorList(
+						SyntaxFactory.AccessorList(
+							SyntaxFactory.List(accessors)
+						)
+					);
+
+				memberDeclarations.Add(propertyDeclaration);
 			}
 
 			var namespaceNode = SyntaxFactory.NamespaceDeclaration(
