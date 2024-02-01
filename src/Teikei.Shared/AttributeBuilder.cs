@@ -121,8 +121,7 @@ internal class AttributeDeclarationBuilder(string name)
 					var hasDefaultValue = _parameterDefaultValues.TryGetValue(x.Value, out var defaultValue);
 					var parameterSyntax = SyntaxFactory.Parameter(
 						SyntaxFactory.Identifier(x.Value))
-						.WithType(
-							SyntaxFactory.ParseTypeName(x.Key.FullName));
+						.WithType(x.Key.GetSyntax());
 
 					if (hasDefaultValue)
 					{

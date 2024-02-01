@@ -74,7 +74,7 @@ public class InterfacedGenerator : IIncrementalGenerator
 				var specialType = method.ReturnType.SpecialType;
 
 				var methodDeclaration = SyntaxFactory.MethodDeclaration(
-					GetSyntax(method.ReturnType),
+					method.ReturnType.GetSyntax(),
 					SyntaxFactory.Identifier(method.Name))
 				.WithSemicolonToken(
 					SyntaxFactory.Token(SyntaxKind.SemicolonToken));
@@ -140,6 +140,4 @@ public class InterfacedGenerator : IIncrementalGenerator
 		);
 	}
 
-	private static TypeSyntax GetSyntax(ITypeSymbol typeSymbol) =>
-		SyntaxFactory.ParseTypeName(typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 }
