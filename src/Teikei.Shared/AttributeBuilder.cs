@@ -2,9 +2,9 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Teikeis;
+namespace Teikei;
 
-public class AttributeDeclarationBuilder(string name)
+internal class AttributeDeclarationBuilder(string name)
 {
 	private readonly List<KeyValuePair<Type, string>> parametersList = [];
 	private readonly List<string> _typeParameters = [];
@@ -39,7 +39,7 @@ public class AttributeDeclarationBuilder(string name)
 
 	public ClassDeclarationSyntax Build()
 	{
-		var declaration = SyntaxFactory.ClassDeclaration(name)
+		var declaration = SyntaxFactory.ClassDeclaration($"{name}Attribute")
 			.WithModifiers(
 				SyntaxFactory.TokenList(
 					SyntaxFactory.Token(SyntaxKind.InternalKeyword)))

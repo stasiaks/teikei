@@ -5,7 +5,9 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teikei.Tests", "Teikei.Tests\Teikei.Tests.csproj", "{5E8FEDD5-A17C-4B68-AF9F-3C9E4A59616E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teikei.NewType", "Teikei.NewType\Teikei.NewType.csproj", "{E20326CF-388B-45BE-939D-7FAE18698CC0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teikei.Interfaced", "Teikei.Interfaced\Teikei.Interfaced.csproj", "{E20326CF-388B-45BE-939D-7FAE18698CC0}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Teikei.Shared", "Teikei.Shared\Teikei.Shared.shproj", "{F1A93C02-D929-4256-B04C-4F3BC8914A96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
