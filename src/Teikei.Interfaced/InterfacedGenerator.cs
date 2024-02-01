@@ -75,12 +75,22 @@ public class InterfacedGenerator : IIncrementalGenerator
 				var specialType = method.ReturnType.SpecialType;
 
 				var parametersList = method.Parameters
-					.SelectMany<IParameterSymbol, SyntaxNodeOrToken>(x => [
-						SyntaxFactory.Token(SyntaxKind.CommaToken),
-						SyntaxFactory.Parameter(
-							SyntaxFactory.Identifier(x.Name)
-						).WithType(x.Type.GetSyntax())
-					])
+					.SelectMany<IParameterSymbol, SyntaxNodeOrToken>(x =>
+					{
+						var parameterSyntax = SyntaxFactory.Parameter(
+							SyntaxFactory.Identifier(x.Name))
+							.WithType(x.Type.GetSyntax());
+						var defaultValueSyntax = x.GetExplicitDefaultValueSyntax();
+						if (defaultValueSyntax is not null)
+						{
+							parameterSyntax = parameterSyntax.WithDefault(
+								SyntaxFactory.EqualsValueClause(
+									defaultValueSyntax
+								)
+							);
+						}
+						return [SyntaxFactory.Token(SyntaxKind.CommaToken), parameterSyntax];
+					})
 					.Skip(1)
 					.ToArray();
 
