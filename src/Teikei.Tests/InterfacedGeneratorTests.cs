@@ -194,4 +194,54 @@ public class InterfacedGeneratorTests
 		";
 		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
 	}
+
+	[Fact]
+	public Task Given_PublicClass_WithAttribute_WithPublicMembers_WithSecondInterfaceDeclaringSomeMembers()
+	{
+		var source = @"
+		using Teikei;
+		using System.Threading.Tasks;
+
+		namespace TestNamespace;
+
+		public interface IOverlap
+		{
+			private int TestProp1 { get; set; }
+
+			Task TestProp3 { get; set; }
+			bool TestProp4 { get; }
+			bool TestProp5 { set; }
+
+			void TestMethod(int p1, string p2);
+			int TestMethod2(bool p3Mangled, bool additional);
+			int TestMethod3(bool p4Different, string p5Name);
+			int TestMethod4(int p6IgnroreIt);
+		}
+
+		[Interfaced]
+		public partial class TestClass : IOverlap
+		{
+			public int TestProp1 { get; set; }
+			public string TestProp2 { get; set; }
+			public Task TestProp3 { get; set; }
+			public bool TestProp4 { get; }
+			public bool TestProp5 { set; }
+			public string TestProp6 { get; private set; }
+			public string TestProp7 { protected get; set; }
+			public string TestProp8 => ""test"";
+
+			public void TestMethod(string p1, int p2)
+			{
+				System.Console.WriteLine(p1);
+			}
+
+			public int TestMethod2(bool p3) => p3 ? 6 : -1;
+
+			public int TestMethod3(bool p4, string p5) => p4 ? 6 : -1;
+
+			public int TestMethod4(int p6) => p6 == 2 ? 6 : -1;
+		}
+		";
+		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
+	}
 }
