@@ -4,7 +4,7 @@ namespace Teikei
 	[System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false)]
 	internal class InterfacedAttribute : System.Attribute
 	{
-		public InterfacedAttribute(bool SkipImplementedMembers = true, bool ForcePublicAccessibility = false)
+		public InterfacedAttribute(bool SkipOverlappingMembers = true, bool ForcePublicAccessibility = false)
 		{
 		}
 	}

@@ -12,14 +12,14 @@ public class InterfacedGenerator : IIncrementalGenerator
 {
 	private const string AttributesNamespace = "Teikei";
 	private const string AttributeName = "Interfaced";
-	private const string SkipImplementedMembersParameterName = "SkipImplementedMembers";
+	private const string SkipOverlappingMembersParameterName = "SkipOverlappingMembers";
 	private const string ForcePublicAccessibilityParameterName = "ForcePublicAccessibility";
 
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
 		var builder = new AttributeDeclarationBuilder(AttributeName)
 			.WithTargets(AttributeTargets.Class)
-			.WithParameter(SkipImplementedMembersParameterName, true)
+			.WithParameter(SkipOverlappingMembersParameterName, true)
 			.WithParameter(ForcePublicAccessibilityParameterName, false);
 		var attribute = builder.Build();
 
@@ -48,7 +48,7 @@ public class InterfacedGenerator : IIncrementalGenerator
 			if (attribute is null)
 				continue;
 
-			var skipImplementedMembers = attribute.ConstructorArguments[0].Value as bool?;
+			var skipOverlappingMembers = attribute.ConstructorArguments[0].Value as bool?;
 			var forcePublicAccessibility = attribute.ConstructorArguments[1].Value as bool?;
 
 			var interfaceName = $"I{typeSymbol.Name}";
@@ -58,6 +58,27 @@ public class InterfacedGenerator : IIncrementalGenerator
 
 			var publicMembers = typeSymbol.GetMembers()
 				.Where(x => x.DeclaredAccessibility is Accessibility.Public);
+
+			if (skipOverlappingMembers is true)
+			{
+				string GetComparableName(ISymbol symbol)
+				{
+					var fullDisplayString = symbol.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat);
+					var index = fullDisplayString.LastIndexOf(symbol.Name);
+					return index >= 0 ? fullDisplayString.Substring(index) : fullDisplayString;
+				}
+
+				var baseTypeMembersNames = typeSymbol.BaseType?
+					.GetMembers()
+					.Concat(typeSymbol.AllInterfaces
+						.SelectMany(x => x.GetMembers()))
+					.Where(x => x.DeclaredAccessibility is Accessibility.Public)
+					.Select(GetComparableName)
+					.Distinct()
+					.ToList() ?? [];
+
+				publicMembers = publicMembers.Where(member => !baseTypeMembersNames.Exists(baseName => baseName == GetComparableName(member)));
+			}
 
 			var methods = publicMembers
 				.OfType<IMethodSymbol>()
@@ -123,7 +144,7 @@ public class InterfacedGenerator : IIncrementalGenerator
 						.WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)));
 				}
 
-				if(accessors.Count == 0)
+				if (accessors.Count == 0)
 					continue;
 
 				var propertyDeclaration = SyntaxFactory.PropertyDeclaration(

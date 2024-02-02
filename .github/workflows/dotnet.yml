@@ -45,7 +45,7 @@ jobs:
       run: dotnet restore
       working-directory: src
     - name: Build
-      run: dotnet build --no-restore --configuration Release
+      run: dotnet build --no-restore --configuration Release --version-suffix ${{ github.run_id }}
       working-directory: src
     - name: Push
       run: dotnet nuget push "**/Release/Teikei.*.nupkg" --source "github"
