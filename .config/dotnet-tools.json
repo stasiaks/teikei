@@ -7,6 +7,12 @@
       "commands": [
         "dotnet-verify"
       ]
+    },
+    "csharpier": {
+      "version": "0.27.2",
+      "commands": [
+        "dotnet-csharpier"
+      ]
     }
   }
 }
