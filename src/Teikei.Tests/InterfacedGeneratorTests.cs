@@ -1,4 +1,5 @@
 using Teikei.Interfaced;
+
 namespace Teikei.Tests;
 
 public class InterfacedGeneratorTests
@@ -14,7 +15,8 @@ public class InterfacedGeneratorTests
 	[Fact]
 	public Task Given_Class_WithoutAttribute()
 	{
-		var source = @"
+		var source =
+			@"
 		namespace TestNamespace;
 
 		public partial class TestClass
@@ -29,7 +31,8 @@ public class InterfacedGeneratorTests
 	[Fact]
 	public Task Given_PublicClass_WithAttribute()
 	{
-		var source = @"
+		var source =
+			@"
 		using Teikei;
 
 		namespace TestNamespace;
@@ -47,7 +50,8 @@ public class InterfacedGeneratorTests
 	[Fact]
 	public Task Given_InternalClass_WithAttribute()
 	{
-		var source = @"
+		var source =
+			@"
 		using Teikei;
 
 		namespace TestNamespace;
@@ -65,7 +69,8 @@ public class InterfacedGeneratorTests
 	[Fact]
 	public Task Given_InternalClass_WithAttribute_WithForcePublic()
 	{
-		var source = @"
+		var source =
+			@"
 		using Teikei;
 
 		namespace TestNamespace;
@@ -83,7 +88,8 @@ public class InterfacedGeneratorTests
 	[Fact]
 	public Task Given_PublicClass_WithAttribute_WithPublicMethods()
 	{
-		var source = @"
+		var source =
+			@"
 		using Teikei;
 		using System.Threading.Tasks;
 
@@ -113,7 +119,8 @@ public class InterfacedGeneratorTests
 	[Fact]
 	public Task Given_PublicClass_WithAttribute_WithPublicMethods_WithParameters()
 	{
-		var source = @"
+		var source =
+			@"
 		using Teikei;
 		using System.Threading.Tasks;
 
@@ -143,7 +150,8 @@ public class InterfacedGeneratorTests
 	[Fact]
 	public Task Given_PublicClass_WithAttribute_WithPublicMethods_WithParameters_WithDefaultValues()
 	{
-		var source = @"
+		var source =
+			@"
 		using Teikei;
 		using System.Threading.Tasks;
 
@@ -173,7 +181,8 @@ public class InterfacedGeneratorTests
 	[Fact]
 	public Task Given_PublicClass_WithAttribute_WithPublicProperties()
 	{
-		var source = @"
+		var source =
+			@"
 		using Teikei;
 		using System.Threading.Tasks;
 
@@ -198,7 +207,8 @@ public class InterfacedGeneratorTests
 	[Fact]
 	public Task Given_PublicClass_WithAttribute_WithPublicMembers_WithSecondInterfaceDeclaringSomeMembers()
 	{
-		var source = @"
+		var source =
+			@"
 		using Teikei;
 		using System.Threading.Tasks;
 
