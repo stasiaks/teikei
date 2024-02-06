@@ -10,7 +10,7 @@ internal static partial class SymbolConversions
 		this IEnumerable<ISymbol> symbols
 	)
 	{
-		var properties = symbols.OfType<IPropertySymbol>();
+		var properties = symbols.OfType<IPropertySymbol>().Where(x => !x.IsIndexer);
 
 		foreach (var property in properties)
 		{
