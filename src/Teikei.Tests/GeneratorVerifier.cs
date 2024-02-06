@@ -5,9 +5,11 @@ namespace Teikei.Tests;
 
 public static class GeneratorVerifier
 {
-	public static Task Verify<TGenerator>(string[] sources) where TGenerator : IIncrementalGenerator, new()
+	public static Task Verify<TGenerator>(string[] sources)
+		where TGenerator : IIncrementalGenerator, new()
 	{
-		var references = new[] {
+		var references = new[]
+		{
 			MetadataReference.CreateFromFile(typeof(object).Assembly.Location)
 		};
 
@@ -17,8 +19,7 @@ public static class GeneratorVerifier
 
 		var generator = new TGenerator();
 
-		var driver = CSharpGeneratorDriver.Create(generator)
-			.RunGenerators(compilation);
+		var driver = CSharpGeneratorDriver.Create(generator).RunGenerators(compilation);
 
 		return Verifier.Verify(driver);
 	}

@@ -4,6 +4,8 @@
 public partial class TestClass
 {
 	public int Testing() => 2;
+
+	public event EventHandler<int> testEvent;
 }
 
 public class Program()

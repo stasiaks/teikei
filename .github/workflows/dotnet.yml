@@ -7,9 +7,28 @@ on:
     branches: [ "master" ]
 
 jobs:
+  check_formatting:
+
+    runs-on: ubuntu-latest
+    name: Check Formatting
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet tool restore
+      working-directory: src
+    - name: Build
+      run: dotnet csharpier --check
+      working-directory: src
+
   test:
 
     runs-on: ubuntu-latest
+    name: Run tests
 
     steps:
     - uses: actions/checkout@v3
@@ -30,6 +49,7 @@ jobs:
   publish:
 
     runs-on: ubuntu-latest
+    name: Publish NuGet
     needs: test
     if: success() && startsWith(github.ref, 'refs/heads/master')
 
@@ -45,8 +65,8 @@ jobs:
       run: dotnet restore
       working-directory: src
     - name: Build
-      run: dotnet build --no-restore --configuration Release --version-suffix ${{ github.run_id }}
+      run: dotnet build --no-restore --configuration Release --version-suffix ${{ github.run_number }}
       working-directory: src
-    - name: Push
+    - name: Push to GitHub Artifacts
       run: dotnet nuget push "**/Release/Teikei.*.nupkg" --source "github"
       working-directory: src
