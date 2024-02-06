@@ -254,4 +254,24 @@ public class InterfacedGeneratorTests
 		";
 		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
 	}
+
+	[Fact]
+	public Task Given_PublicClass_WithAttribute_WithPublicEvents()
+	{
+		var source =
+			@"
+		using Teikei;
+		using System;
+
+		namespace TestNamespace;
+
+		[Interfaced]
+		public partial class TestClass
+		{
+			public event EventHandler Test1;
+			public event EventHandler<int> Test2;
+		}
+		";
+		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
+	}
 }
