@@ -274,4 +274,27 @@ public class InterfacedGeneratorTests
 		";
 		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
 	}
+
+	[Fact]
+	public Task Given_PublicClass_WithAttribute_WithPublicIndexers()
+	{
+		var source =
+			@"
+		using Teikei;
+
+		namespace TestNamespace;
+		using System;
+
+		[Interfaced]
+		public partial class TestClass
+		{
+			private int this[Guid a] { get => 2; set {} }
+			public int this[bool a] { get => 5; private set {} }
+			public int this[int a] { get => a; set {} }
+			public string this[string a] { set {} }
+			public bool this[string a, int b] { private get => false; set { } }
+		}
+		";
+		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
+	}
 }

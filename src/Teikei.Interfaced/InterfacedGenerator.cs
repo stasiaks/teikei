@@ -110,7 +110,7 @@ public class InterfacedGenerator : IIncrementalGenerator
 			// interface_event_declaration
 			memberDeclarations.AddRange(publicMembers.GetEventDeclarations());
 			// interface_indexer_declaration
-			// TODO
+			memberDeclarations.AddRange(publicMembers.GetIndexerDeclarations());
 
 			var namespaceNode = SyntaxFactory
 				.NamespaceDeclaration(
