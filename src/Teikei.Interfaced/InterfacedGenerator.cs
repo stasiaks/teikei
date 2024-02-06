@@ -100,10 +100,17 @@ public class InterfacedGenerator : IIncrementalGenerator
 				);
 			}
 
+			// https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/interfaces#1841-general
 			var memberDeclarations = new List<MemberDeclarationSyntax> { };
 
+			// interface_method_declaration
 			memberDeclarations.AddRange(publicMembers.GetOrdinaryMethodDeclarations());
+			// interface_property_declaration
 			memberDeclarations.AddRange(publicMembers.GetPropertyDeclarations());
+			// interface_event_declaration
+			memberDeclarations.AddRange(publicMembers.GetEventDeclarations());
+			// interface_indexer_declaration
+			// TODO
 
 			var namespaceNode = SyntaxFactory
 				.NamespaceDeclaration(
