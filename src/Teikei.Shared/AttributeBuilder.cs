@@ -23,7 +23,9 @@ internal class AttributeDeclarationBuilder(string name)
 	public AttributeDeclarationBuilder WithParameter<T>(string parameterName)
 	{
 		if (_parameterDefaultValues.Count != 0)
-			throw new InvalidOperationException("Can't add parameter without default value after one with default value");
+			throw new InvalidOperationException(
+				"Can't add parameter without default value after one with default value"
+			);
 		_parametersList.Add(new KeyValuePair<Type, string>(typeof(T), parameterName));
 		return this;
 	}
@@ -50,60 +52,76 @@ internal class AttributeDeclarationBuilder(string name)
 	public ClassDeclarationSyntax Build()
 	{
 		var className = $"{name}Attribute";
-		var declaration = SyntaxFactory.ClassDeclaration(className)
-			.WithModifiers(
-				SyntaxFactory.TokenList(
-					SyntaxFactory.Token(SyntaxKind.InternalKeyword)))
+		var declaration = SyntaxFactory
+			.ClassDeclaration(className)
+			.WithModifiers(SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.InternalKeyword)))
 			.WithBaseList(
 				SyntaxFactory.BaseList(
 					SyntaxFactory.SingletonSeparatedList<BaseTypeSyntax>(
 						SyntaxFactory.SimpleBaseType(
 							SyntaxFactory.QualifiedName(
 								SyntaxFactory.IdentifierName(nameof(System)),
-								SyntaxFactory.IdentifierName(nameof(Attribute)))))))
+								SyntaxFactory.IdentifierName(nameof(Attribute))
+							)
+						)
+					)
+				)
+			)
 			.WithAttributeLists(
 				SyntaxFactory.SingletonList<AttributeListSyntax>(
 					SyntaxFactory.AttributeList(
 						SyntaxFactory.SingletonSeparatedList<AttributeSyntax>(
-							SyntaxFactory.Attribute(
-								SyntaxFactory.QualifiedName(
-									SyntaxFactory.IdentifierName(nameof(System)),
-									SyntaxFactory.IdentifierName("AttributeUsage")
-								)
-							)
-							.WithArgumentList(
-								SyntaxFactory.AttributeArgumentList(
-									SyntaxFactory.SeparatedList<AttributeArgumentSyntax>(
-										new SyntaxNodeOrToken[]{
-											SyntaxFactory.AttributeArgument(
-												CreateAttributeTargetsExpression()
-											),
-											SyntaxFactory.Token(SyntaxKind.CommaToken),
-											SyntaxFactory.AttributeArgument(
-												SyntaxFactory.LiteralExpression(_allowMultiple
-													? SyntaxKind.TrueLiteralExpression
-													: SyntaxKind.FalseLiteralExpression)
-											)
-											.WithNameEquals(
-												SyntaxFactory.NameEquals(
-													SyntaxFactory.IdentifierName(nameof(AttributeUsageAttribute.AllowMultiple))
-												)
-											),
-										}
+							SyntaxFactory
+								.Attribute(
+									SyntaxFactory.QualifiedName(
+										SyntaxFactory.IdentifierName(nameof(System)),
+										SyntaxFactory.IdentifierName("AttributeUsage")
 									)
 								)
-							)
+								.WithArgumentList(
+									SyntaxFactory.AttributeArgumentList(
+										SyntaxFactory.SeparatedList<AttributeArgumentSyntax>(
+											new SyntaxNodeOrToken[]
+											{
+												SyntaxFactory.AttributeArgument(
+													CreateAttributeTargetsExpression()
+												),
+												SyntaxFactory.Token(SyntaxKind.CommaToken),
+												SyntaxFactory
+													.AttributeArgument(
+														SyntaxFactory.LiteralExpression(
+															_allowMultiple
+																? SyntaxKind.TrueLiteralExpression
+																: SyntaxKind.FalseLiteralExpression
+														)
+													)
+													.WithNameEquals(
+														SyntaxFactory.NameEquals(
+															SyntaxFactory.IdentifierName(
+																nameof(
+																	AttributeUsageAttribute.AllowMultiple
+																)
+															)
+														)
+													),
+											}
+										)
+									)
+								)
 						)
 					)
-			));
+				)
+			);
 		if (_typeParameters.Count > 0)
 		{
 			var typeParameterNodes = _typeParameters
-				.SelectMany(x => new SyntaxNodeOrToken[]{
-					SyntaxFactory.Token(SyntaxKind.CommaToken),
-					SyntaxFactory.TypeParameter(
-						SyntaxFactory.Identifier(x)
-					)})
+				.SelectMany(x =>
+					new SyntaxNodeOrToken[]
+					{
+						SyntaxFactory.Token(SyntaxKind.CommaToken),
+						SyntaxFactory.TypeParameter(SyntaxFactory.Identifier(x))
+					}
+				)
 				.Skip(1)
 				.ToArray();
 
@@ -118,21 +136,23 @@ internal class AttributeDeclarationBuilder(string name)
 			var parameterNodes = _parametersList
 				.SelectMany(x =>
 				{
-					var hasDefaultValue = _parameterDefaultValues.TryGetValue(x.Value, out var defaultValue);
-					var parameterSyntax = SyntaxFactory.Parameter(
-						SyntaxFactory.Identifier(x.Value))
+					var hasDefaultValue = _parameterDefaultValues.TryGetValue(
+						x.Value,
+						out var defaultValue
+					);
+					var parameterSyntax = SyntaxFactory
+						.Parameter(SyntaxFactory.Identifier(x.Value))
 						.WithType(x.Key.GetSyntax());
 
 					if (hasDefaultValue)
 					{
 						parameterSyntax = parameterSyntax.WithDefault(
-							SyntaxFactory.EqualsValueClause(
-								CreateLiteralExpression(defaultValue)
-							)
+							SyntaxFactory.EqualsValueClause(CreateLiteralExpression(defaultValue))
 						);
 					}
 
-					return new SyntaxNodeOrToken[]{
+					return new SyntaxNodeOrToken[]
+					{
 						SyntaxFactory.Token(SyntaxKind.CommaToken),
 						parameterSyntax
 					};
@@ -142,36 +162,41 @@ internal class AttributeDeclarationBuilder(string name)
 
 			declaration = declaration.WithMembers(
 				SyntaxFactory.SingletonList<MemberDeclarationSyntax>(
-					SyntaxFactory.ConstructorDeclaration(
-						SyntaxFactory.Identifier(className))
-					.WithParameterList(
-						SyntaxFactory.ParameterList(
-							SyntaxFactory.SeparatedList<ParameterSyntax>(parameterNodes)))
-					.WithModifiers(
-						SyntaxFactory.TokenList(
-							SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
-					.WithBody(SyntaxFactory.Block()) // No need for any body
+					SyntaxFactory
+						.ConstructorDeclaration(SyntaxFactory.Identifier(className))
+						.WithParameterList(
+							SyntaxFactory.ParameterList(
+								SyntaxFactory.SeparatedList<ParameterSyntax>(parameterNodes)
+							)
+						)
+						.WithModifiers(
+							SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+						)
+						.WithBody(SyntaxFactory.Block()) // No need for any body
 				)
 			);
 		}
-
 
 		return declaration;
 	}
 
 	private ExpressionSyntax CreateAttributeTargetsExpression()
 	{
-		var values = _targets.ToString("f")
+		var values = _targets
+			.ToString("f")
 			.Split(',')
 			.Select(x => x.Trim())
-			.Select(x => SyntaxFactory.MemberAccessExpression(
-				SyntaxKind.SimpleMemberAccessExpression,
+			.Select(x =>
 				SyntaxFactory.MemberAccessExpression(
 					SyntaxKind.SimpleMemberAccessExpression,
-					SyntaxFactory.IdentifierName(nameof(System)),
-					SyntaxFactory.IdentifierName(nameof(AttributeTargets))
-				),
-				SyntaxFactory.IdentifierName(x)))
+					SyntaxFactory.MemberAccessExpression(
+						SyntaxKind.SimpleMemberAccessExpression,
+						SyntaxFactory.IdentifierName(nameof(System)),
+						SyntaxFactory.IdentifierName(nameof(AttributeTargets))
+					),
+					SyntaxFactory.IdentifierName(x)
+				)
+			)
 			.ToArray();
 
 		if (values.Length == 1)
@@ -186,21 +211,23 @@ internal class AttributeDeclarationBuilder(string name)
 		);
 		var remaining = values.Skip(2).ToArray();
 
-		return remaining.Aggregate(firstBitwise, (acc, next) =>
-			SyntaxFactory.BinaryExpression(
-				SyntaxKind.BitwiseOrExpression,
-				acc,
-				next
-			));
+		return remaining.Aggregate(
+			firstBitwise,
+			(acc, next) => SyntaxFactory.BinaryExpression(SyntaxKind.BitwiseOrExpression, acc, next)
+		);
 	}
 
 	private LiteralExpressionSyntax CreateLiteralExpression(object? value)
 	{
-		return value switch {
+		return value switch
+		{
 			null => SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression),
 			true => SyntaxFactory.LiteralExpression(SyntaxKind.TrueLiteralExpression),
 			false => SyntaxFactory.LiteralExpression(SyntaxKind.FalseLiteralExpression),
-			_ => throw new NotImplementedException($"Didn't implement handling of literals with type {value.GetType().Name}")
+			_
+				=> throw new NotImplementedException(
+					$"Didn't implement handling of literals with type {value.GetType().Name}"
+				)
 		};
 	}
 }
