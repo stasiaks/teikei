@@ -16,7 +16,7 @@ public class InterfacedGenerator : IIncrementalGenerator
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
 		var builder = new AttributeDeclarationBuilder(AttributeName)
-			.WithTargets(AttributeTargets.Class)
+			.WithTargets(AttributeTargets.Class | AttributeTargets.Struct)
 			.WithParameter(SkipOverlappingMembersParameterName, true)
 			.WithParameter(ForcePublicAccessibilityParameterName, false);
 		var attribute = builder.Build();
@@ -73,7 +73,8 @@ public class InterfacedGenerator : IIncrementalGenerator
 
 			var publicMembers = typeSymbol
 				.GetMembers()
-				.Where(x => x.DeclaredAccessibility is Accessibility.Public);
+				.Where(x => x.DeclaredAccessibility is Accessibility.Public)
+				.Where(x => !x.IsImplicitlyDeclared);
 
 			if (skipOverlappingMembers is true)
 			{
@@ -112,6 +113,28 @@ public class InterfacedGenerator : IIncrementalGenerator
 			// interface_indexer_declaration
 			memberDeclarations.AddRange(publicMembers.GetIndexerDeclarations());
 
+			TypeDeclarationSyntax baseTypeDeclarationSyntax = typeSymbol.IsValueType
+				? typeSymbol.IsRecord
+					? SyntaxFactory
+						.RecordDeclaration(
+							SyntaxKind.RecordStructDeclaration,
+							SyntaxFactory.Token(SyntaxKind.RecordKeyword),
+							SyntaxFactory.Identifier(typeSymbol.Name)
+						)
+						.WithClassOrStructKeyword(SyntaxFactory.Token(SyntaxKind.StructKeyword))
+						.WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken))
+					: SyntaxFactory.StructDeclaration(typeSymbol.Name)
+				: typeSymbol.IsRecord
+					? SyntaxFactory
+						.RecordDeclaration(
+							SyntaxKind.RecordDeclaration,
+							SyntaxFactory.Token(SyntaxKind.RecordKeyword),
+							SyntaxFactory.Identifier(typeSymbol.Name)
+						)
+						.WithClassOrStructKeyword(SyntaxFactory.Token(SyntaxKind.ClassKeyword))
+						.WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken))
+					: SyntaxFactory.ClassDeclaration(typeSymbol.Name);
+
 			var namespaceNode = SyntaxFactory
 				.NamespaceDeclaration(
 					SyntaxFactory.IdentifierName(typeSymbol.ContainingNamespace.ToDisplayString())
@@ -133,8 +156,7 @@ public class InterfacedGenerator : IIncrementalGenerator
 									)
 								)
 								.WithMembers(SyntaxFactory.List(memberDeclarations)),
-							SyntaxFactory
-								.ClassDeclaration(typeSymbol.Name)
+							baseTypeDeclarationSyntax
 								.WithModifiers(
 									SyntaxFactory.TokenList(
 										[

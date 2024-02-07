@@ -199,6 +199,7 @@ public class InterfacedGeneratorTests
 			public string TestProp6 { get; private set; }
 			public string TestProp7 { protected get; set; }
 			public string TestProp8 => ""test"";
+			public string TestProp9 { get; init; }
 		}
 		";
 		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
@@ -294,6 +295,97 @@ public class InterfacedGeneratorTests
 			public string this[string a] { set {} }
 			public bool this[string a, int b] { private get => false; set { } }
 		}
+		";
+		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
+	}
+
+	[Fact]
+	public Task Given_PublicStruct_WithAttribute_WithVariousMembers()
+	{
+		var source =
+			@"
+		using Teikei;
+
+		namespace TestNamespace;
+		using System;
+
+		[Interfaced]
+		public partial struct TestStruct
+		{
+			public int TestProp { get; set; }
+			public readonly string TestMethod() => $""Test output {TestProp}"";
+			public event EventHandler TestEvent;
+			public readonly int this[string a] => TestProp;
+		}
+		";
+		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
+	}
+
+	[Fact]
+	public Task Given_PublicRecord_WithAttribute_WithVariousMembers()
+	{
+		var source =
+			@"
+		using Teikei;
+
+		namespace TestNamespace;
+		using System;
+
+		[Interfaced]
+		public partial record TestRecordClass
+		{
+			public int TestProp { get; set; }
+			public readonly string TestMethod() => $""Test output {TestProp}"";
+			public event EventHandler TestEvent;
+			public readonly int this[string a] => TestProp;
+		}
+		";
+		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
+	}
+
+	[Fact]
+	public Task Given_PublicRecordStruct_WithAttribute_WithVariousMembers()
+	{
+		/*
+		var source =
+			@"
+		using Teikei;
+
+		namespace TestNamespace;
+		using System;
+
+		[Interfaced]
+		public partial record struct TestRecordStruct
+		{
+			public int TestProp { get; set; }
+			public readonly string TestMethod() => $""Test output {TestProp}"";
+			public event EventHandler TestEvent;
+			public readonly int this[string a] => TestProp;
+		}
+		";
+		*/
+		var source =
+		@"
+
+			using Teikei;
+
+		namespace TestNamespace;
+		using System;
+		using System.Collections.Generic;
+[Interfaced]
+public partial record struct PublicService
+{
+	private Exception FullyPrivateProperty { get; set; }
+	
+	public Exception PrivateGetSetProperty { private get; init; }
+
+	public int FullyPublicProperty { get; set; }
+
+	public string PublicGetterPrivateSetter { get; private set; }
+
+	public IEnumerable<string> PrivateGetterPublicSetter { private get; set; }
+
+}
 		";
 		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
 	}
