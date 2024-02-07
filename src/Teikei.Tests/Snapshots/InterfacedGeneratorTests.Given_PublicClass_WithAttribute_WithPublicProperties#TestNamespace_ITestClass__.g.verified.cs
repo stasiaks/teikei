@@ -19,6 +19,8 @@ namespace TestNamespace
 		string TestProp7 { set; }
 
 		string TestProp8 { get; }
+
+		string TestProp9 { get; init; }
 	}
 
 	public partial class TestClass : ITestClass

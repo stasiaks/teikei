@@ -27,9 +27,10 @@ internal static partial class SymbolConversions
 
 			if (property.SetMethod?.DeclaredAccessibility == Accessibility.Public)
 			{
+				var syntaxKind = property.SetMethod.IsInitOnly ? SyntaxKind.InitAccessorDeclaration : SyntaxKind.SetAccessorDeclaration;
 				accessors.Add(
 					SyntaxFactory
-						.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+						.AccessorDeclaration(syntaxKind)
 						.WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken))
 				);
 			}
