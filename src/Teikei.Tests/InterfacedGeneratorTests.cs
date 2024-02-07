@@ -346,7 +346,6 @@ public class InterfacedGeneratorTests
 	[Fact]
 	public Task Given_PublicRecordStruct_WithAttribute_WithVariousMembers()
 	{
-		/*
 		var source =
 			@"
 		using Teikei;
@@ -362,30 +361,6 @@ public class InterfacedGeneratorTests
 			public event EventHandler TestEvent;
 			public readonly int this[string a] => TestProp;
 		}
-		";
-		*/
-		var source =
-		@"
-
-			using Teikei;
-
-		namespace TestNamespace;
-		using System;
-		using System.Collections.Generic;
-[Interfaced]
-public partial record struct PublicService
-{
-	private Exception FullyPrivateProperty { get; set; }
-	
-	public Exception PrivateGetSetProperty { private get; init; }
-
-	public int FullyPublicProperty { get; set; }
-
-	public string PublicGetterPrivateSetter { get; private set; }
-
-	public IEnumerable<string> PrivateGetterPublicSetter { private get; set; }
-
-}
 		";
 		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
 	}
