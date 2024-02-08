@@ -70,3 +70,6 @@ jobs:
     - name: Push to GitHub Artifacts
       run: dotnet nuget push "**/Release/Teikei.*.nupkg" --source "github"
       working-directory: src
+    - name: Push to NuGet Gallery
+      run: dotnet nuget push "**/Release/Teikei.*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ secrets.NUGET_API_KEY }}
+      working-directory: src
