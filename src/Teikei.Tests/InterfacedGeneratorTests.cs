@@ -364,4 +364,25 @@ public class InterfacedGeneratorTests
 		";
 		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
 	}
+
+	[Fact]
+	public Task Given_GenericClass()
+	{
+		var source =
+			@"
+		using Teikei;
+
+		namespace TestNamespace;
+		using System;
+
+		[Interfaced]
+		public partial class TestClass<T1, in T2, out T3>
+		{
+			public T1 TestProp { get; set; }
+
+			public T3 TetMethod(T2 p) => throw new NotImplementedException(""error"");
+		}
+		";
+		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
+	}
 }

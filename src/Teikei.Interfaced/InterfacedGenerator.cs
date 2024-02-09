@@ -47,7 +47,7 @@ public class InterfacedGenerator : IIncrementalGenerator
 
 	private static void GenerateInterface(
 		SourceProductionContext context,
-		ImmutableArray<ITypeSymbol> symbols
+		ImmutableArray<INamedTypeSymbol> symbols
 	)
 	{
 		foreach (var typeSymbol in symbols)
@@ -113,27 +113,26 @@ public class InterfacedGenerator : IIncrementalGenerator
 			// interface_indexer_declaration
 			memberDeclarations.AddRange(publicMembers.GetIndexerDeclarations());
 
-			TypeDeclarationSyntax baseTypeDeclarationSyntax = typeSymbol.IsValueType
-				? typeSymbol.IsRecord
-					? SyntaxFactory
-						.RecordDeclaration(
-							SyntaxKind.RecordStructDeclaration,
-							SyntaxFactory.Token(SyntaxKind.RecordKeyword),
-							SyntaxFactory.Identifier(typeSymbol.Name)
-						)
-						.WithClassOrStructKeyword(SyntaxFactory.Token(SyntaxKind.StructKeyword))
-						.WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken))
-					: SyntaxFactory.StructDeclaration(typeSymbol.Name)
-				: typeSymbol.IsRecord
-					? SyntaxFactory
-						.RecordDeclaration(
-							SyntaxKind.RecordDeclaration,
-							SyntaxFactory.Token(SyntaxKind.RecordKeyword),
-							SyntaxFactory.Identifier(typeSymbol.Name)
-						)
-						.WithClassOrStructKeyword(SyntaxFactory.Token(SyntaxKind.ClassKeyword))
-						.WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken))
-					: SyntaxFactory.ClassDeclaration(typeSymbol.Name);
+			TypeDeclarationSyntax partialDeclarationSyntax = typeSymbol.CreatePartialDeclaration();
+
+			var typeParameterList = typeSymbol.GetTypeParameterList();
+
+			var interfaceDeclarationSyntax = SyntaxFactory
+				.InterfaceDeclaration(interfaceName)
+				.WithModifiers(
+					SyntaxFactory.TokenList(SyntaxFactory.Token(interfaceAccessorSyntax))
+				);
+
+			TypeArgumentListSyntax? typeArgumentList = typeParameterList?.ToTypeArguments();
+			if (typeParameterList is not null)
+			{
+				interfaceDeclarationSyntax = interfaceDeclarationSyntax.WithTypeParameterList(
+					typeParameterList
+				);
+			}
+			TypeSyntax interfaceIdentifierName = typeArgumentList is not null
+				? SyntaxFactory.GenericName(interfaceName).WithTypeArgumentList(typeArgumentList)
+				: SyntaxFactory.IdentifierName(interfaceName);
 
 			var namespaceNode = SyntaxFactory
 				.NamespaceDeclaration(
@@ -148,32 +147,16 @@ public class InterfacedGenerator : IIncrementalGenerator
 				.WithMembers(
 					SyntaxFactory.List<MemberDeclarationSyntax>(
 						[
-							SyntaxFactory
-								.InterfaceDeclaration(interfaceName)
-								.WithModifiers(
-									SyntaxFactory.TokenList(
-										SyntaxFactory.Token(interfaceAccessorSyntax)
+							interfaceDeclarationSyntax.WithMembers(
+								SyntaxFactory.List(memberDeclarations)
+							),
+							partialDeclarationSyntax.WithBaseList(
+								SyntaxFactory.BaseList(
+									SyntaxFactory.SingletonSeparatedList<BaseTypeSyntax>(
+										SyntaxFactory.SimpleBaseType(interfaceIdentifierName)
 									)
 								)
-								.WithMembers(SyntaxFactory.List(memberDeclarations)),
-							baseTypeDeclarationSyntax
-								.WithModifiers(
-									SyntaxFactory.TokenList(
-										[
-											SyntaxFactory.Token(baseAccessorSyntax),
-											SyntaxFactory.Token(SyntaxKind.PartialKeyword)
-										]
-									)
-								)
-								.WithBaseList(
-									SyntaxFactory.BaseList(
-										SyntaxFactory.SingletonSeparatedList<BaseTypeSyntax>(
-											SyntaxFactory.SimpleBaseType(
-												SyntaxFactory.IdentifierName(interfaceName)
-											)
-										)
-									)
-								)
+							)
 						]
 					)
 				);
@@ -197,7 +180,10 @@ public class InterfacedGenerator : IIncrementalGenerator
 		};
 	}
 
-	private static ITypeSymbol? Transform(GeneratorSyntaxContext context, CancellationToken token)
+	private static INamedTypeSymbol? Transform(
+		GeneratorSyntaxContext context,
+		CancellationToken token
+	)
 	{
 		if (context.Node is not AttributeSyntax attribute)
 			return null;
