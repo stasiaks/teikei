@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Teikei.Interfaced;
 
-internal static partial class SymbolConversions
+internal static partial class SymbolExtensions
 {
 	public static IEnumerable<MethodDeclarationSyntax> GetOrdinaryMethodDeclarations(
 		this IEnumerable<ISymbol> symbols
