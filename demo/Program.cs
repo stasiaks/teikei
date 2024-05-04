@@ -2,7 +2,7 @@
 
 namespace Teikei.Demo;
 
-[Interfaced]
+[Interfaced(SkipOverlappingMembers: false, ForcePublicAccessibility: true)]
 public partial class TestClass
 {
 	public int Testing() => 2;

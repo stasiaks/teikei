@@ -41,3 +41,22 @@ namespace TestNamespace
 	}
 }
 ```
+
+By default, generated interface will not contain members already declared in other implemented interfaces and/or base class.
+This can be adjusted via `SkipOverlappingMembers` parameter:
+
+```cs
+[Interfaced(SkipOverlappingMembers: false)]
+public partial class YourClass
+{
+}
+```
+
+Likewise, generated interface will be declared as `internal` if class is.
+You can force interface to be public with `ForcePublicAccessibility` parameter:
+```cs
+[Interfaced(ForcePublicAccessibility: true)]
+public partial class YourClass
+{
+}
+```

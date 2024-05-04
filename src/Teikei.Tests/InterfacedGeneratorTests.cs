@@ -386,11 +386,6 @@ public class InterfacedGeneratorTests
 		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
 	}
 
-	/// <summary>
-	/// did you notice there's a typo in this method's name?
-	/// </summary>
-	/// this should not be part of result 
-	/// <returns>look at implementation and make a guess</returns>
 	[Fact]
 	public Task Given_PublicClass_WithTrivia()
 	{
