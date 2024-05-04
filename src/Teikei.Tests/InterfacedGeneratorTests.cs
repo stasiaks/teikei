@@ -376,11 +376,59 @@ public class InterfacedGeneratorTests
 		using System;
 
 		[Interfaced]
-		public partial class TestClass<T1, in T2, out T3>
+		public partial class TestClass<T1, T2, T3>
 		{
 			public T1 TestProp { get; set; }
 
 			public T3 TetMethod(T2 p) => throw new NotImplementedException(""error"");
+		}
+		";
+		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);
+	}
+
+	/// <summary>
+	/// did you notice there's a typo in this method's name?
+	/// </summary>
+	/// this should not be part of result 
+	/// <returns>look at implementation and make a guess</returns>
+	[Fact]
+	public Task Given_PublicClass_WithTrivia()
+	{
+		var source =
+			@"
+		using Teikei;
+
+		namespace TestNamespace;
+		using System;
+
+
+		/// <summary>
+		/// Test class unlike any you've evere seen
+		/// </summary>
+		[Interfaced]
+		public partial class TestClass
+		{
+
+			/// <summary>
+			/// Best property EU
+			/// </summary>
+			public int TestProp { get; set; }
+
+			/// <summary>
+			/// did you notice there's a typo in this method's name?
+			/// </summary>
+			/// <returns>look at implementation and make a guess</returns>
+			public bool TetMethod(int p) => throw new NotImplementedException(""error"");
+
+			/// <summary>
+			/// I wish for observables to phase out events
+			/// </summary> 
+			public event EventHandler TestEvent;
+
+			/// <summary>
+			/// Does anyone actually use documentation comments on indexers?
+			/// </summary>
+			public readonly int this[string a] => TestProp;
 		}
 		";
 		return GeneratorVerifier.Verify<InterfacedGenerator>([source]);

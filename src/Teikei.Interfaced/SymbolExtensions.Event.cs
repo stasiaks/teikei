@@ -14,19 +14,25 @@ internal static partial class SymbolExtensions
 
 		foreach (var @event in events)
 		{
-			var eventDeclaration = SyntaxFactory.EventFieldDeclaration(
-				SyntaxFactory
-					.VariableDeclaration(
-						SyntaxFactory.IdentifierName(
-							@event.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+			var eventDeclaration = SyntaxFactory
+				.EventFieldDeclaration(
+					SyntaxFactory
+						.VariableDeclaration(
+							SyntaxFactory.IdentifierName(
+								@event.Type.ToDisplayString(
+									SymbolDisplayFormat.FullyQualifiedFormat
+								)
+							)
 						)
-					)
-					.WithVariables(
-						SyntaxFactory.SingletonSeparatedList<VariableDeclaratorSyntax>(
-							SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(@event.Name))
+						.WithVariables(
+							SyntaxFactory.SingletonSeparatedList<VariableDeclaratorSyntax>(
+								SyntaxFactory.VariableDeclarator(
+									SyntaxFactory.Identifier(@event.Name)
+								)
+							)
 						)
-					)
-			);
+				)
+				.WithTriviaFrom(@event);
 
 			yield return eventDeclaration;
 		}
