@@ -1,4 +1,6 @@
-﻿namespace Teikei.Demo;
+﻿using Demo;
+
+namespace Teikei.Demo;
 
 [Interfaced]
 public partial class TestClass
@@ -15,9 +17,15 @@ public class Program()
 		Console.WriteLine($"{nameof(test.Testing)} is {test.Testing()}");
 	}
 
+	private static void Test(IPublicService service)
+	{
+		Console.WriteLine($"{nameof(service.FullyPublicProperty)} is {service.FullyPublicProperty}");
+	}
+
 	public static int Main()
 	{
 		Test(new TestClass());
+		Test(new PublicService() { FullyPublicProperty = 3 });
 		return 0;
 	}
 }

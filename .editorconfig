@@ -4,6 +4,10 @@ root = true
 [*]
 indent_style = tab
 
+# Pipelines
+[.yml]
+indent_style = space
+
 # Xml files
 [*.xml]
 indent_size = 2
