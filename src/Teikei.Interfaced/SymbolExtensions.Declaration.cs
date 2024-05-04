@@ -90,8 +90,6 @@ internal static partial class SymbolExtensions
 			)
 			.Skip(1)
 			.ToArray();
-		return SyntaxFactory.TypeArgumentList(
-			SyntaxFactory.SeparatedList<TypeSyntax>(nodes)
-		);
+		return SyntaxFactory.TypeArgumentList(SyntaxFactory.SeparatedList<TypeSyntax>(nodes));
 	}
 }

@@ -27,7 +27,9 @@ internal static partial class SymbolExtensions
 
 			if (property.SetMethod?.DeclaredAccessibility == Accessibility.Public)
 			{
-				var syntaxKind = property.SetMethod.IsInitOnly ? SyntaxKind.InitAccessorDeclaration : SyntaxKind.SetAccessorDeclaration;
+				var syntaxKind = property.SetMethod.IsInitOnly
+					? SyntaxKind.InitAccessorDeclaration
+					: SyntaxKind.SetAccessorDeclaration;
 				accessors.Add(
 					SyntaxFactory
 						.AccessorDeclaration(syntaxKind)
@@ -40,7 +42,8 @@ internal static partial class SymbolExtensions
 
 			var propertyDeclaration = SyntaxFactory
 				.PropertyDeclaration(property.Type.GetSyntax(), property.Name)
-				.WithAccessorList(SyntaxFactory.AccessorList(SyntaxFactory.List(accessors)));
+				.WithAccessorList(SyntaxFactory.AccessorList(SyntaxFactory.List(accessors)))
+				.WithTriviaFrom(property);
 
 			yield return propertyDeclaration;
 		}

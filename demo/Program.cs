@@ -19,7 +19,9 @@ public class Program()
 
 	private static void Test(IPublicService service)
 	{
-		Console.WriteLine($"{nameof(service.FullyPublicProperty)} is {service.FullyPublicProperty}");
+		Console.WriteLine(
+			$"{nameof(service.FullyPublicProperty)} is {service.FullyPublicProperty}"
+		);
 	}
 
 	public static int Main()

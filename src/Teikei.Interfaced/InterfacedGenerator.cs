@@ -134,6 +134,17 @@ public class InterfacedGenerator : IIncrementalGenerator
 				? SyntaxFactory.GenericName(interfaceName).WithTypeArgumentList(typeArgumentList)
 				: SyntaxFactory.IdentifierName(interfaceName);
 
+			var syntaxNodeWithStructuredTrivia = typeSymbol
+				.DeclaringSyntaxReferences.Select(x => x.GetSyntax())
+				.FirstOrDefault(x => x.HasStructuredTrivia);
+
+			if (syntaxNodeWithStructuredTrivia is not null)
+			{
+				interfaceDeclarationSyntax = interfaceDeclarationSyntax.WithTriviaFrom(
+					syntaxNodeWithStructuredTrivia
+				);
+			}
+
 			var namespaceNode = SyntaxFactory
 				.NamespaceDeclaration(
 					SyntaxFactory.IdentifierName(typeSymbol.ContainingNamespace.ToDisplayString())

@@ -6,7 +6,7 @@ namespace Demo;
 public partial record PublicService
 {
 	private Exception FullyPrivateProperty { get; set; }
-	
+
 	public Exception PrivateGetSetProperty { private get; init; }
 
 	public int FullyPublicProperty { get; set; }
@@ -14,5 +14,4 @@ public partial record PublicService
 	public string PublicGetterPrivateSetter { get; private set; }
 
 	public IEnumerable<string> PrivateGetterPublicSetter { private get; set; }
-
 }

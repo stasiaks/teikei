@@ -27,7 +27,9 @@ internal static partial class SymbolExtensions
 
 			if (indexer.SetMethod?.DeclaredAccessibility == Accessibility.Public)
 			{
-				var syntaxKind = indexer.SetMethod.IsInitOnly ? SyntaxKind.InitAccessorDeclaration : SyntaxKind.SetAccessorDeclaration;
+				var syntaxKind = indexer.SetMethod.IsInitOnly
+					? SyntaxKind.InitAccessorDeclaration
+					: SyntaxKind.SetAccessorDeclaration;
 				accessors.Add(
 					SyntaxFactory
 						.AccessorDeclaration(syntaxKind)
@@ -63,7 +65,8 @@ internal static partial class SymbolExtensions
 						SyntaxFactory.SeparatedList<ParameterSyntax>(parametersList)
 					)
 				)
-				.WithAccessorList(SyntaxFactory.AccessorList(SyntaxFactory.List(accessors)));
+				.WithAccessorList(SyntaxFactory.AccessorList(SyntaxFactory.List(accessors)))
+				.WithTriviaFrom(indexer);
 
 			yield return indexerDeclaration;
 		}

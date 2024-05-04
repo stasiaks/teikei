@@ -43,7 +43,8 @@ internal static partial class SymbolExtensions
 					SyntaxFactory.ParameterList(
 						SyntaxFactory.SeparatedList<ParameterSyntax>(parametersList)
 					)
-				);
+				)
+				.WithTriviaFrom(method);
 
 			yield return methodDeclaration;
 		}
