@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Teikei.Interfaced\Teikei.Interfaced.csproj" />
+    <ProjectReference Include="..\Teikei.GenerateSystemUnderTest\Teikei.GenerateSystemUnderTest.csproj" />
   </ItemGroup>
 
 </Project>
