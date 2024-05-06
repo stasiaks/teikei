@@ -10,6 +10,7 @@
 
 	<ItemGroup>
 	    <Compile Include="$(MSBuildThisFileDirectory)AttributeBuilder.cs" />
+	    <Compile Include="$(MSBuildThisFileDirectory)IncrementalValueProviderExtensions.cs" />
 	    <Compile Include="$(MSBuildThisFileDirectory)RoslynExtensions.cs" />
 	</ItemGroup>
 

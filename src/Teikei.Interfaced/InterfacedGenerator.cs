@@ -39,10 +39,10 @@ public class InterfacedGenerator : IIncrementalGenerator
 
 		var types = context
 			.SyntaxProvider.CreateSyntaxProvider(IsMatchingAttribute, Transform)
-			.Where(x => x is not null)
+			.WithValue()
 			.Collect();
 
-		context.RegisterSourceOutput(types, GenerateInterface!);
+		context.RegisterSourceOutput(types, GenerateInterface);
 	}
 
 	private static void GenerateInterface(

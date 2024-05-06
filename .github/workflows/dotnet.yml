@@ -2,71 +2,76 @@ name: .NET
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
   check_formatting:
-
     runs-on: ubuntu-latest
     name: Check Formatting
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet tool restore
-      working-directory: src
-    - name: Build
-      run: dotnet csharpier --check
-      working-directory: src
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet tool restore
+        working-directory: src
+      - name: Build
+        run: dotnet csharpier --check
+        working-directory: src
 
   test:
-
     runs-on: ubuntu-latest
     name: Run tests
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-      working-directory: src
-    - name: Build
-      run: dotnet build --no-restore
-      working-directory: src
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-      working-directory: src
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: src
+      - name: Build
+        run: dotnet build --no-restore
+        working-directory: src
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+        working-directory: src
 
   publish:
-
     runs-on: ubuntu-latest
-    name: Publish NuGet
+    name: Publish Artifact
     needs: test
-    if: success() && startsWith(github.ref, 'refs/heads/master')
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-      working-directory: src
-    - name: Build
-      run: dotnet build --no-restore --configuration Release
-      working-directory: src
-    - name: Store artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: packages
-        path: "**/Release/Teikei.*.nupkg"
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Add source
+        run: dotnet nuget add source --username stasiaks --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/stasiaks/index.json"
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: src
+      - name: Build Release
+        run: dotnet build --no-restore --configuration Release --output ../dist
+        working-directory: src
+        if: success() && startsWith(github.ref, 'refs/heads/master')
+      - name: Build Debug
+        run: dotnet build --no-restore --configuration Debug --output ../dist
+        working-directory: src
+        if: success() && !startsWith(github.ref, 'refs/heads/master')
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+      - name: Store artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: dist/Teikei.*.nupkg
