@@ -13,7 +13,7 @@
 		<!-- NuGet Package -->
         <PackageId>$(MSBuildProjectName)</PackageId>
 	    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
-		<VersionPrefix>1.0.2</VersionPrefix>
+		<VersionPrefix>0.0.1</VersionPrefix>
 		<Authors>Sebastian Stasiak</Authors>
 		<RepositoryUrl>https://github.com/stasiaks/teikei</RepositoryUrl>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
