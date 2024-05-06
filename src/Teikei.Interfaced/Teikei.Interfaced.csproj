@@ -7,6 +7,8 @@
 		<Nullable>enable</Nullable>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<!-- Known false-positive for analyzer projects -->
+		<NoWarn>NU5128</NoWarn>
 
 		<!-- NuGet Package -->
         <PackageId>$(MSBuildProjectName)</PackageId>

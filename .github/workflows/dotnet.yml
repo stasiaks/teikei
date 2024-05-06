@@ -12,9 +12,9 @@ jobs:
     name: Check Formatting
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
       - name: Restore dependencies
@@ -29,9 +29,9 @@ jobs:
     name: Run tests
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
       - name: Restore dependencies
@@ -50,9 +50,9 @@ jobs:
     needs: test
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
       - name: Add source
@@ -61,11 +61,11 @@ jobs:
         run: dotnet restore
         working-directory: src
       - name: Build Release
-        run: dotnet build --no-restore --configuration Release -o ../dist
+        run: dotnet build --no-restore --configuration Release --output ../dist
         working-directory: src
         if: success() && startsWith(github.ref, 'refs/heads/master')
       - name: Build Debug
-        run: dotnet build --no-restore --configuration Debug -o ../dist
+        run: dotnet build --no-restore --configuration Debug --output ../dist
         working-directory: src
         if: success() && !startsWith(github.ref, 'refs/heads/master')
         env:
