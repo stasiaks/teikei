@@ -12,6 +12,8 @@
 	    <Compile Include="$(MSBuildThisFileDirectory)AttributeBuilder.cs" />
 	    <Compile Include="$(MSBuildThisFileDirectory)IncrementalValueProviderExtensions.cs" />
 	    <Compile Include="$(MSBuildThisFileDirectory)RoslynExtensions.cs" />
+	    <Compile Include="$(MSBuildThisFileDirectory)SymbolExtensions.cs" />
+	    <Compile Include="$(MSBuildThisFileDirectory)SymbolExtensions.Declaration.cs" />
 	</ItemGroup>
 
 </Project>
