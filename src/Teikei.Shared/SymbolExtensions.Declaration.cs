@@ -2,7 +2,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Teikei.Interfaced;
+namespace Teikei;
 
 internal static partial class SymbolExtensions
 {
@@ -37,18 +37,7 @@ internal static partial class SymbolExtensions
 			baseDeclaration = baseDeclaration.WithTypeParameterList(typeParameterList);
 		}
 
-		SyntaxKind[] baseAccessorSyntaxKinds = typeSymbol.DeclaredAccessibility switch
-		{
-			Accessibility.Private => [SyntaxKind.PrivateKeyword],
-			Accessibility.ProtectedAndInternal
-				=> [SyntaxKind.PrivateKeyword, SyntaxKind.ProtectedKeyword],
-			Accessibility.Protected => [SyntaxKind.ProtectedKeyword],
-			Accessibility.Internal => [SyntaxKind.InternalKeyword],
-			Accessibility.ProtectedOrInternal
-				=> [SyntaxKind.ProtectedKeyword, SyntaxKind.InternalKeyword],
-			Accessibility.Public => [SyntaxKind.PublicKeyword],
-			_ => [],
-		};
+		var baseAccessorSyntaxKinds = typeSymbol.DeclaredAccessibility.ToSyntaxKinds();
 
 		var tokens = baseAccessorSyntaxKinds
 			.Concat([SyntaxKind.PartialKeyword])

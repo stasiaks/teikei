@@ -5,10 +5,16 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\src\Teikei.Interfaced\Teikei.Interfaced.csproj"
+			OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\src\Teikei.GenerateSystemUnderTest\Teikei.GenerateSystemUnderTest.csproj"
 			OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
