@@ -3,7 +3,6 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Teikei.Tests;
 
-[Interfaced(SkipOverlappingMembers: true)]
 public static class GeneratorVerifier
 {
 	public static Task Verify<TGenerator>(string[] sources)

@@ -33,6 +33,8 @@
 		<ProjectReference Include="..\Teikei.Interfaced.Attributes\Teikei.Interfaced.Attributes.csproj" />
 		<ProjectReference
 			Include="..\Teikei.GenerateSystemUnderTest\Teikei.GenerateSystemUnderTest.csproj" />
+		<ProjectReference
+			Include="..\Teikei.GenerateSystemUnderTest.Attributes\Teikei.GenerateSystemUnderTest.Attributes.csproj" />
 	</ItemGroup>
 
 </Project>
