@@ -8,7 +8,7 @@ namespace Teikei.Interfaced;
 [Generator]
 public class InterfacedGenerator : IIncrementalGenerator
 {
-	private const string AttributeName = "Interfaced";
+	private const string AttributeName = nameof(InterfacedAttribute);
 
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
@@ -31,7 +31,7 @@ public class InterfacedGenerator : IIncrementalGenerator
 
 			var attribute = typeSymbol
 				.GetAttributes()
-				.FirstOrDefault(x => x.AttributeClass?.Name is $"{AttributeName}Attribute");
+				.FirstOrDefault(x => x.AttributeClass?.Name is AttributeName);
 			if (attribute is null)
 				continue;
 
@@ -162,8 +162,8 @@ public class InterfacedGenerator : IIncrementalGenerator
 
 		return attribute.Name switch
 		{
-			SimpleNameSyntax sns => sns.Identifier.Text is AttributeName,
-			QualifiedNameSyntax qns => qns.Right.Identifier.Text is AttributeName,
+			SimpleNameSyntax sns => sns.Identifier.Text is AttributeName || $"{sns.Identifier.Text}Attribute" is AttributeName,
+			QualifiedNameSyntax qns => qns.Right.Identifier.Text is AttributeName|| $"{qns.Right.Identifier.Text}Attribute" is AttributeName,
 			_ => false
 		};
 	}
