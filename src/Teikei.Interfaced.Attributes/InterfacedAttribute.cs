@@ -1,5 +1,7 @@
 ﻿namespace Teikei;
 
+#pragma warning disable CS9113 // Parameter is unread.
+
 /// <summary>
 /// When placed on a partial type, it will generate matching interface for it.
 /// </summary>
@@ -10,3 +12,5 @@ public class InterfacedAttribute(
 	bool SkipOverlappingMembers = true,
 	bool ForcePublicAccessibility = false
 ) : Attribute { }
+
+#pragma warning restore CS9113 // Parameter is unread.
