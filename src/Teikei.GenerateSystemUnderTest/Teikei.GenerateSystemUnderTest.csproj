@@ -7,18 +7,19 @@
 		<Nullable>enable</Nullable>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<!-- Known false-positive for analyzer projects -->
-		<NoWarn>NU5128</NoWarn>
 
 		<!-- NuGet Package -->
-        <PackageId>$(MSBuildProjectName)</PackageId>
-	    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+		<PackageId>$(MSBuildProjectName)</PackageId>
+		<PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
 		<VersionPrefix>0.0.1</VersionPrefix>
 		<Authors>Sebastian Stasiak</Authors>
 		<RepositoryUrl>https://github.com/stasiaks/teikei</RepositoryUrl>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
-		<Description>Source Generator that provides generation of System Under Test instances, together with relevant mocks</Description>
+		<Description>
+			Source Generator that provides generation of System Under Test instances,
+			together with relevant mocks
+		</Description>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
@@ -27,9 +28,19 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference
+			Include="..\Teikei.GenerateSystemUnderTest.Attributes\Teikei.GenerateSystemUnderTest.Attributes.csproj"
+			PrivateAssets="All" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<!-- Package the generator in the analyzer directory of the nuget package -->
 		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true"
 			PackagePath="analyzers/dotnet/cs" Visible="false" />
+		<None Include="$(OutputPath)\$(AssemblyName).Attributes.dll" Pack="true"
+			PackagePath="analyzers/dotnet/cs" Visible="false" />
+		<None Include="$(OutputPath)\$(AssemblyName).Attributes.dll" Pack="true"
+			PackagePath="lib/netstandard2.0" Visible="true" />
 		<None Include="README.md" Pack="true" PackagePath="/" />
 	</ItemGroup>
 
