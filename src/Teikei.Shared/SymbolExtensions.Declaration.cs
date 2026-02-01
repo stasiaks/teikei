@@ -10,26 +10,24 @@ internal static partial class SymbolExtensions
 	{
 		TypeDeclarationSyntax baseDeclaration = (typeSymbol.IsValueType, typeSymbol.IsRecord) switch
 		{
-			(true, true)
-				=> SyntaxFactory
-					.RecordDeclaration(
-						SyntaxKind.RecordStructDeclaration,
-						SyntaxFactory.Token(SyntaxKind.RecordKeyword),
-						SyntaxFactory.Identifier(typeSymbol.Name)
-					)
-					.WithClassOrStructKeyword(SyntaxFactory.Token(SyntaxKind.StructKeyword))
-					.WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
+			(true, true) => SyntaxFactory
+				.RecordDeclaration(
+					SyntaxKind.RecordStructDeclaration,
+					SyntaxFactory.Token(SyntaxKind.RecordKeyword),
+					SyntaxFactory.Identifier(typeSymbol.Name)
+				)
+				.WithClassOrStructKeyword(SyntaxFactory.Token(SyntaxKind.StructKeyword))
+				.WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
 			(true, false) => SyntaxFactory.StructDeclaration(typeSymbol.Name),
-			(false, true)
-				=> SyntaxFactory
-					.RecordDeclaration(
-						SyntaxKind.RecordDeclaration,
-						SyntaxFactory.Token(SyntaxKind.RecordKeyword),
-						SyntaxFactory.Identifier(typeSymbol.Name)
-					)
-					.WithClassOrStructKeyword(SyntaxFactory.Token(SyntaxKind.ClassKeyword))
-					.WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
-			(false, false) => SyntaxFactory.ClassDeclaration(typeSymbol.Name)
+			(false, true) => SyntaxFactory
+				.RecordDeclaration(
+					SyntaxKind.RecordDeclaration,
+					SyntaxFactory.Token(SyntaxKind.RecordKeyword),
+					SyntaxFactory.Identifier(typeSymbol.Name)
+				)
+				.WithClassOrStructKeyword(SyntaxFactory.Token(SyntaxKind.ClassKeyword))
+				.WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
+			(false, false) => SyntaxFactory.ClassDeclaration(typeSymbol.Name),
 		};
 
 		if (typeSymbol.GetTypeParameterList() is { } typeParameterList)
@@ -71,10 +69,9 @@ internal static partial class SymbolExtensions
 			.DescendantNodes()
 			.OfType<TypeParameterSyntax>()
 			.SelectMany<TypeParameterSyntax, SyntaxNodeOrToken>(x =>
-
 				[
 					SyntaxFactory.Token(SyntaxKind.CommaToken),
-					SyntaxFactory.IdentifierName(x.Identifier.Text)
+					SyntaxFactory.IdentifierName(x.Identifier.Text),
 				]
 			)
 			.Skip(1)

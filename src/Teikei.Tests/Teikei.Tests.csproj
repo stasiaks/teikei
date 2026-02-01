@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -32,10 +31,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Teikei.Interfaced\Teikei.Interfaced.csproj" />
 		<ProjectReference Include="..\Teikei.Interfaced.Attributes\Teikei.Interfaced.Attributes.csproj" />
-		<ProjectReference
-			Include="..\Teikei.GenerateSystemUnderTest\Teikei.GenerateSystemUnderTest.csproj" />
-		<ProjectReference
-			Include="..\Teikei.GenerateSystemUnderTest.Attributes\Teikei.GenerateSystemUnderTest.Attributes.csproj" />
+		<ProjectReference Include="..\Teikei.GenerateSystemUnderTest\Teikei.GenerateSystemUnderTest.csproj" />
+		<ProjectReference Include="..\Teikei.GenerateSystemUnderTest.Attributes\Teikei.GenerateSystemUnderTest.Attributes.csproj" />
 	</ItemGroup>
-
 </Project>

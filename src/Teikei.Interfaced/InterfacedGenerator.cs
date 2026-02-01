@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -30,12 +29,14 @@ public class InterfacedGenerator : IIncrementalGenerator
 		{
 			var testType = typeSymbol.GetAttributes()[0].AttributeClass;
 
-            var aas = typeSymbol.GetAttributes();
+			var aas = typeSymbol.GetAttributes();
 			var attribute = typeSymbol
 				.GetAttributes()
 				.FirstOrDefault(x => x.AttributeClass?.Name is AttributeName);
 			if (attribute is null)
+			{
 				continue;
+			}
 
 			var skipOverlappingMembers = attribute.ConstructorArguments[0].Value as bool?;
 			var forcePublicAccessibility = attribute.ConstructorArguments[1].Value as bool?;
@@ -73,7 +74,8 @@ public class InterfacedGenerator : IIncrementalGenerator
 						.Where(x => x.DeclaredAccessibility is Accessibility.Public)
 						.Select(GetComparableName)
 						.Distinct()
-						.ToList() ?? [];
+						.ToList()
+					?? [];
 
 				publicMembers = publicMembers.Where(member =>
 					!baseTypeMembersNames.Exists(baseName => baseName == GetComparableName(member))
@@ -92,7 +94,7 @@ public class InterfacedGenerator : IIncrementalGenerator
 			// interface_indexer_declaration
 			memberDeclarations.AddRange(publicMembers.GetIndexerDeclarations());
 
-			TypeDeclarationSyntax partialDeclarationSyntax = typeSymbol.CreatePartialDeclaration();
+			var partialDeclarationSyntax = typeSymbol.CreatePartialDeclaration();
 
 			var typeParameterList = typeSymbol.GetTypeParameterList();
 
@@ -102,7 +104,7 @@ public class InterfacedGenerator : IIncrementalGenerator
 					SyntaxFactory.TokenList(SyntaxFactory.Token(interfaceAccessorSyntax))
 				);
 
-			TypeArgumentListSyntax? typeArgumentList = typeParameterList?.ToTypeArguments();
+			var typeArgumentList = typeParameterList?.ToTypeArguments();
 			if (typeParameterList is not null)
 			{
 				interfaceDeclarationSyntax = interfaceDeclarationSyntax.WithTypeParameterList(
@@ -135,20 +137,18 @@ public class InterfacedGenerator : IIncrementalGenerator
 					)
 				)
 				.WithMembers(
-					SyntaxFactory.List<MemberDeclarationSyntax>(
-						[
-							interfaceDeclarationSyntax.WithMembers(
-								SyntaxFactory.List(memberDeclarations)
-							),
-							partialDeclarationSyntax.WithBaseList(
-								SyntaxFactory.BaseList(
-									SyntaxFactory.SingletonSeparatedList<BaseTypeSyntax>(
-										SyntaxFactory.SimpleBaseType(interfaceIdentifierName)
-									)
+					SyntaxFactory.List<MemberDeclarationSyntax>([
+						interfaceDeclarationSyntax.WithMembers(
+							SyntaxFactory.List(memberDeclarations)
+						),
+						partialDeclarationSyntax.WithBaseList(
+							SyntaxFactory.BaseList(
+								SyntaxFactory.SingletonSeparatedList<BaseTypeSyntax>(
+									SyntaxFactory.SimpleBaseType(interfaceIdentifierName)
 								)
 							)
-						]
-					)
+						),
+					])
 				);
 
 			var source = namespaceNode.NormalizeWhitespace("\t", "\n").ToFullString();
@@ -160,13 +160,17 @@ public class InterfacedGenerator : IIncrementalGenerator
 	private static bool IsMatchingAttribute(SyntaxNode node, CancellationToken token)
 	{
 		if (node is not AttributeSyntax attribute)
+		{
 			return false;
+		}
 
 		return attribute.Name switch
 		{
-			SimpleNameSyntax sns => sns.Identifier.Text is AttributeName || $"{sns.Identifier.Text}Attribute" is AttributeName,
-			QualifiedNameSyntax qns => qns.Right.Identifier.Text is AttributeName|| $"{qns.Right.Identifier.Text}Attribute" is AttributeName,
-			_ => false
+			SimpleNameSyntax sns => sns.Identifier.Text is AttributeName
+				|| $"{sns.Identifier.Text}Attribute" is AttributeName,
+			QualifiedNameSyntax qns => qns.Right.Identifier.Text is AttributeName
+				|| $"{qns.Right.Identifier.Text}Attribute" is AttributeName,
+			_ => false,
 		};
 	}
 
@@ -176,12 +180,16 @@ public class InterfacedGenerator : IIncrementalGenerator
 	)
 	{
 		if (context.Node is not AttributeSyntax attribute)
+		{
 			return null;
+		}
 
 		var parentSymbol = attribute.Parent?.Parent;
 
 		if (parentSymbol is not BaseTypeDeclarationSyntax baseTypeDeclarationSyntax)
+		{
 			return null;
+		}
 
 		return context.SemanticModel.GetDeclaredSymbol(baseTypeDeclarationSyntax, token);
 	}

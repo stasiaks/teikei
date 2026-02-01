@@ -17,6 +17,9 @@ indent_size = 2
 
 #### Core EditorConfig Options ####
 
+trim_trailing_whitespace = true
+max_line_length = 100
+
 # Indentation and spacing
 indent_size = 4
 tab_width = 4
@@ -29,7 +32,7 @@ insert_final_newline = true
 [*.{cs,vb}]
 
 # Organize usings
-dotnet_separate_import_directive_groups = true
+dotnet_separate_import_directive_groups = false
 dotnet_sort_system_directives_first = true
 file_header_template = unset
 
@@ -367,3 +370,7 @@ dotnet_naming_style.s_camelcase.required_suffix =
 dotnet_naming_style.s_camelcase.word_separator = 
 dotnet_naming_style.s_camelcase.capitalization = camel_case
 
+# Diagnostics severity
+
+## Conflicts with CSharpier
+dotnet_diagnostic.IDE0055.severity = none

@@ -1,11 +1,11 @@
 using System.Runtime.CompilerServices;
-
 using Teikei;
 
 public static class ModuleInitializer
 {
 	// Exists just to ensure these cannot be stripped from assembly
-	private static Type[] UsedAttributes => [typeof(InterfacedAttribute), typeof(GenerateSutAttribute)];
+	private static Type[] UsedAttributes =>
+		[typeof(InterfacedAttribute), typeof(GenerateSutAttribute)];
 
 	[ModuleInitializer]
 	public static void Initialize()

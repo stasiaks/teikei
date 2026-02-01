@@ -10,12 +10,18 @@ internal static partial class SymbolExtensions
 		accessibility switch
 		{
 			Accessibility.Private => [SyntaxKind.PrivateKeyword],
-			Accessibility.ProtectedAndInternal
-				=> [SyntaxKind.PrivateKeyword, SyntaxKind.ProtectedKeyword],
+			Accessibility.ProtectedAndInternal =>
+			[
+				SyntaxKind.PrivateKeyword,
+				SyntaxKind.ProtectedKeyword,
+			],
 			Accessibility.Protected => [SyntaxKind.ProtectedKeyword],
 			Accessibility.Internal => [SyntaxKind.InternalKeyword],
-			Accessibility.ProtectedOrInternal
-				=> [SyntaxKind.ProtectedKeyword, SyntaxKind.InternalKeyword],
+			Accessibility.ProtectedOrInternal =>
+			[
+				SyntaxKind.ProtectedKeyword,
+				SyntaxKind.InternalKeyword,
+			],
 			Accessibility.Public => [SyntaxKind.PublicKeyword],
 			_ => [],
 		};

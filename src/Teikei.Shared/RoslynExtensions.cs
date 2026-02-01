@@ -38,52 +38,43 @@ internal static class RoslynExtensions
 
 		return parameterSymbol.ExplicitDefaultValue switch
 		{
-			null
-				=> SyntaxFactory.LiteralExpression(
-					SyntaxKind.DefaultLiteralExpression,
-					SyntaxFactory.Token(SyntaxKind.DefaultKeyword)
-				), // valid for both class and struct
+			null => SyntaxFactory.LiteralExpression(
+				SyntaxKind.DefaultLiteralExpression,
+				SyntaxFactory.Token(SyntaxKind.DefaultKeyword)
+			), // valid for both class and struct
 			true => SyntaxFactory.LiteralExpression(SyntaxKind.TrueLiteralExpression),
 			false => SyntaxFactory.LiteralExpression(SyntaxKind.FalseLiteralExpression),
-			char v
-				=> SyntaxFactory.LiteralExpression(
-					SyntaxKind.CharacterLiteralExpression,
-					SyntaxFactory.Literal(v)
-				),
-			decimal v
-				=> SyntaxFactory.LiteralExpression(
-					SyntaxKind.NumericLiteralExpression,
-					SyntaxFactory.Literal(v)
-				),
-			double v
-				=> SyntaxFactory.LiteralExpression(
-					SyntaxKind.NumericLiteralExpression,
-					SyntaxFactory.Literal(v)
-				),
-			string v
-				=> SyntaxFactory.LiteralExpression(
-					SyntaxKind.StringLiteralExpression,
-					SyntaxFactory.Literal(v)
-				),
-			int v
-				=> SyntaxFactory.LiteralExpression(
-					SyntaxKind.NumericLiteralExpression,
-					SyntaxFactory.Literal(v)
-				),
-			long v
-				=> SyntaxFactory.LiteralExpression(
-					SyntaxKind.NumericLiteralExpression,
-					SyntaxFactory.Literal(v)
-				),
-			float v
-				=> SyntaxFactory.LiteralExpression(
-					SyntaxKind.NumericLiteralExpression,
-					SyntaxFactory.Literal(v)
-				),
-			_
-				=> throw new NotImplementedException(
-					$"Did not properly implement handling default value for {parameterSymbol.Type.Name}"
-				)
+			char v => SyntaxFactory.LiteralExpression(
+				SyntaxKind.CharacterLiteralExpression,
+				SyntaxFactory.Literal(v)
+			),
+			decimal v => SyntaxFactory.LiteralExpression(
+				SyntaxKind.NumericLiteralExpression,
+				SyntaxFactory.Literal(v)
+			),
+			double v => SyntaxFactory.LiteralExpression(
+				SyntaxKind.NumericLiteralExpression,
+				SyntaxFactory.Literal(v)
+			),
+			string v => SyntaxFactory.LiteralExpression(
+				SyntaxKind.StringLiteralExpression,
+				SyntaxFactory.Literal(v)
+			),
+			int v => SyntaxFactory.LiteralExpression(
+				SyntaxKind.NumericLiteralExpression,
+				SyntaxFactory.Literal(v)
+			),
+			long v => SyntaxFactory.LiteralExpression(
+				SyntaxKind.NumericLiteralExpression,
+				SyntaxFactory.Literal(v)
+			),
+			float v => SyntaxFactory.LiteralExpression(
+				SyntaxKind.NumericLiteralExpression,
+				SyntaxFactory.Literal(v)
+			),
+			_ => throw new NotImplementedException(
+				$"Did not properly implement handling default value for {parameterSymbol.Type.Name}"
+			),
 		};
 	}
 }

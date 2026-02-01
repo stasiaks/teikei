@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<LangVersion>13.0</LangVersion>
@@ -27,17 +26,30 @@
 	<ItemGroup>
 		<ProjectReference
 			Include="..\Teikei.Interfaced.Attributes\Teikei.Interfaced.Attributes.csproj"
-			PrivateAssets="All" />
+			PrivateAssets="All"
+		/>
 	</ItemGroup>
 
 	<ItemGroup>
 		<!-- Package the generator in the analyzer directory of the nuget package -->
-		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true"
-			PackagePath="analyzers/dotnet/cs" Visible="false" />
-		<None Include="$(OutputPath)\$(AssemblyName).Attributes.dll" Pack="true"
-			PackagePath="analyzers/dotnet/cs" Visible="false" />
-		<None Include="$(OutputPath)\$(AssemblyName).Attributes.dll" Pack="true"
-			PackagePath="lib/netstandard2.0" Visible="true" />
+		<None
+			Include="$(OutputPath)\$(AssemblyName).dll"
+			Pack="true"
+			PackagePath="analyzers/dotnet/cs"
+			Visible="false"
+		/>
+		<None
+			Include="$(OutputPath)\$(AssemblyName).Attributes.dll"
+			Pack="true"
+			PackagePath="analyzers/dotnet/cs"
+			Visible="false"
+		/>
+		<None
+			Include="$(OutputPath)\$(AssemblyName).Attributes.dll"
+			Pack="true"
+			PackagePath="lib/netstandard2.0"
+			Visible="true"
+		/>
 		<None Include="README.md" Pack="true" PackagePath="/" />
 	</ItemGroup>
 
@@ -49,7 +61,9 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" PrivateAssets="all" />
 	</ItemGroup>
 
-	<Import Project="..\Teikei.Shared\Teikei.Shared.projitems" Label="Shared"
-		Condition="Exists('..\Teikei.Shared\Teikei.Shared.projitems')" />
-
+	<Import
+		Project="..\Teikei.Shared\Teikei.Shared.projitems"
+		Label="Shared"
+		Condition="Exists('..\Teikei.Shared\Teikei.Shared.projitems')"
+	/>
 </Project>

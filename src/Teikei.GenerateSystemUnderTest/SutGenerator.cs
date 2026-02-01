@@ -69,13 +69,11 @@ public class InterfacedGenerator : IIncrementalGenerator
 					)
 				)
 				.WithMembers(
-					SyntaxFactory.List<MemberDeclarationSyntax>(
-						[
-							partialDeclarationSyntax.WithMembers(
-								SyntaxFactory.List<MemberDeclarationSyntax>([mainMethodDeclaration])
-							)
-						]
-					)
+					SyntaxFactory.List<MemberDeclarationSyntax>([
+						partialDeclarationSyntax.WithMembers(
+							SyntaxFactory.List<MemberDeclarationSyntax>([mainMethodDeclaration])
+						),
+					])
 				);
 			var source = namespaceNode.NormalizeWhitespace("\t", "\n").ToFullString();
 			context.AddSource(
@@ -92,9 +90,11 @@ public class InterfacedGenerator : IIncrementalGenerator
 
 		return attribute.Name switch
 		{
-			SimpleNameSyntax sns => sns.Identifier.Text is AttributeName || $"{sns.Identifier.Text}Attribute" is AttributeName,
-			QualifiedNameSyntax qns => qns.Right.Identifier.Text is AttributeName|| $"{qns.Right.Identifier.Text}Attribute" is AttributeName,
-			_ => false
+			SimpleNameSyntax sns => sns.Identifier.Text is AttributeName
+				|| $"{sns.Identifier.Text}Attribute" is AttributeName,
+			QualifiedNameSyntax qns => qns.Right.Identifier.Text is AttributeName
+				|| $"{qns.Right.Identifier.Text}Attribute" is AttributeName,
+			_ => false,
 		};
 	}
 

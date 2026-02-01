@@ -23,7 +23,9 @@ public static class GeneratorVerifier
 
 	public static readonly List<PortableExecutableReference> References = AppDomain
 		.CurrentDomain.GetAssemblies()
-		.Where(static assembly => !assembly.IsDynamic && !string.IsNullOrWhiteSpace(assembly.Location))
+		.Where(static assembly =>
+			!assembly.IsDynamic && !string.IsNullOrWhiteSpace(assembly.Location)
+		)
 		.Select(static assembly => MetadataReference.CreateFromFile(assembly.Location))
 		.ToList();
 }

@@ -119,7 +119,7 @@ internal class AttributeDeclarationBuilder(string name)
 					new SyntaxNodeOrToken[]
 					{
 						SyntaxFactory.Token(SyntaxKind.CommaToken),
-						SyntaxFactory.TypeParameter(SyntaxFactory.Identifier(x))
+						SyntaxFactory.TypeParameter(SyntaxFactory.Identifier(x)),
 					}
 				)
 				.Skip(1)
@@ -154,7 +154,7 @@ internal class AttributeDeclarationBuilder(string name)
 					return new SyntaxNodeOrToken[]
 					{
 						SyntaxFactory.Token(SyntaxKind.CommaToken),
-						parameterSyntax
+						parameterSyntax,
 					};
 				})
 				.Skip(1)
@@ -224,10 +224,9 @@ internal class AttributeDeclarationBuilder(string name)
 			null => SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression),
 			true => SyntaxFactory.LiteralExpression(SyntaxKind.TrueLiteralExpression),
 			false => SyntaxFactory.LiteralExpression(SyntaxKind.FalseLiteralExpression),
-			_
-				=> throw new NotImplementedException(
-					$"Didn't implement handling of literals with type {value.GetType().Name}"
-				)
+			_ => throw new NotImplementedException(
+				$"Didn't implement handling of literals with type {value.GetType().Name}"
+			),
 		};
 	}
 }
