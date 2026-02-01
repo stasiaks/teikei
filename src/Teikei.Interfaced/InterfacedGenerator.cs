@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -29,6 +30,7 @@ public class InterfacedGenerator : IIncrementalGenerator
 		{
 			var testType = typeSymbol.GetAttributes()[0].AttributeClass;
 
+            var aas = typeSymbol.GetAttributes();
 			var attribute = typeSymbol
 				.GetAttributes()
 				.FirstOrDefault(x => x.AttributeClass?.Name is AttributeName);
