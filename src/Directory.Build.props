@@ -1,0 +1,15 @@
+<Project>
+	<PropertyGroup>
+		<LangVersion>13.0</LangVersion>
+		<Nullable>enable</Nullable>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+		<Authors>Sebastian Stasiak</Authors>
+		<RepositoryUrl>https://github.com/stasiaks/teikei</RepositoryUrl>
+		<PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<EmbedUntrackedSources>false</EmbedUntrackedSources>
+		<DebugType>embedded</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+	</PropertyGroup>
+</Project>

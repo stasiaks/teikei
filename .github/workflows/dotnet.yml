@@ -21,7 +21,7 @@ jobs:
         run: dotnet tool restore
         working-directory: src
       - name: Build
-        run: dotnet csharpier --check
+        run: dotnet csharpier check .
         working-directory: src
 
   test:
@@ -54,18 +54,18 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 9.0.x
       - name: Add source
         run: dotnet nuget add source --username stasiaks --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/stasiaks/index.json"
       - name: Restore dependencies
         run: dotnet restore
         working-directory: src
       - name: Build Release
-        run: dotnet build --no-restore --configuration Release --output ../dist
+        run: dotnet build --no-restore --configuration Release -p:OutputPath=../../dist
         working-directory: src
         if: success() && startsWith(github.ref, 'refs/heads/master')
       - name: Build Debug
-        run: dotnet build --no-restore --configuration Debug --output ../dist
+        run: dotnet build --no-restore --configuration Debug -p:OutputPath=../../dist
         working-directory: src
         if: success() && !startsWith(github.ref, 'refs/heads/master')
         env:

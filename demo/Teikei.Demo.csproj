@@ -2,22 +2,23 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\src\Teikei.Interfaced\Teikei.Interfaced.csproj"
-			OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<PackageReference Include="Teikei.Interfaced" Version="1.1.1" />
+		<!-- <ProjectReference Include="..\src\Teikei.Interfaced\Teikei.Interfaced.csproj"
+		OutputItemType="Analyzer" ReferenceOutputAssembly="false" /> -->
 	</ItemGroup>
 	<!--  This is only required because I reference projects directly
 		NuGet will not require manual fiddling with project file -->
 	<ItemGroup>
-		<ProjectReference
+		<!-- <ProjectReference
 			Include="..\src\Teikei.Interfaced.Attributes\Teikei.Interfaced.Attributes.csproj"
-			OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+		OutputItemType="Analyzer" ReferenceOutputAssembly="true" /> -->
 	</ItemGroup>
 
 	<ItemGroup>
